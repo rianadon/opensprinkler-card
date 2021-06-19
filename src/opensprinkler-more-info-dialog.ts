@@ -23,8 +23,8 @@ export class MoreInfoDialog extends LitElement {
 
   @state() private _config?: OpensprinklerCardConfig | undefined;
 
-  @state() private _loading?: string;
-  @state() private _stopping?: string;
+  @state() private _loadings: string[] = [];
+  @state() private _stoppings: string[] = [];
 
   public showDialog(params: MoreInfoDialogParams) {
     this._config = params.config;
@@ -43,10 +43,10 @@ export class MoreInfoDialog extends LitElement {
   protected updated(changedProps: PropertyValues) {
     super.updated(changedProps);
     if (changedProps.has("hass")) {
-      this._loading = undefined;
+      this._loadings = [];
       // Only mark a stop operation as complete when all stations have turned off
       if (this.entities(isStation).every(s => s.state === 'idle'))
-        this._stopping = undefined;
+        this._stoppings = [];
     }
   }
 
@@ -98,7 +98,7 @@ export class MoreInfoDialog extends LitElement {
   }
 
   private _renderControl(entity: HassEntity, enabled: boolean | undefined, config: any) {
-    const loading = entity.entity_id === this._loading || entity.entity_id === this._stopping;
+    const loading = this._loadings.includes(entity.entity_id) || this._stoppings.includes(entity.entity_id);
     if (typeof enabled === 'undefined') return html`<hui-warning>Enable switch for entity not found</hui-warning>`;
 
     return html`<opensprinkler-generic-entity-row .config=${config} .hass=${this.hass} @hass-more-info=${this._moreInfo} style="height: 32px">
@@ -176,10 +176,10 @@ export class MoreInfoDialog extends LitElement {
     const isStoppingProgram = service === 'stop' && entity.entity_id.endsWith('_program_running');
 
     if (entity_id === 'run_once' || isStoppingProgram) {
-      this._stopping = entity_id;
+      this._stoppings = [...this._stoppings, entity_id];
       entity_id = this.entities(isController)[0].entity_id;
     } else {
-      this._loading = entity_id;
+      this._loadings = [...this._loadings, entity_id];
     }
 
     this.hass.callService('opensprinkler', service, { entity_id });

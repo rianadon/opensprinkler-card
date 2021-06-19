@@ -18,11 +18,12 @@ If you don't have [HACS][hacs] installed, see [manual installation](#manual-inst
 
 ## Options
 
-| Name              | Type    | Requirement     | Description                                          |
-| ----------------- | ------- | ------------    | -------------------------------------------          |
-| type              | string  | **Required**    | `custom:opensprinkler-card`                              |
+| Name              | Type    | Requirement  | Description                                       |
+| ----------------- | ------- | ------------ | -------------------------------------------       |
+| type              | string  | **Required** | `custom:opensprinkler-card`                       |
 | device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant. |
-| name            | string  | **Optional** | Card title. |
+| name              | string  | **Optional** | Card title.                                       |
+| bars              | dict    | **Optional** | Configuration for the progress bars               |
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
 
@@ -35,6 +36,22 @@ Otherwise, make sure:
 - The ids of Program running binary sensors end with `_program_running`
 - The id of the Opensprinkler Enable switch ends with `opensprinkler_enabled`
 - The ids of program & station enabled switches end with `_enabled`
+
+## Progress bar customization
+
+The OpenSprinkler card depends on the [Timer Bar Card](https://github.com/rianadon/timer-bar-card) for rendering progress bars. You can use Timer Bar customization options inside the OpenSprinkler card by inserting your configurations under the `bars` option. You'll need to switch to the code (YAML) editor to use these options. Fields under the [Customization](https://github.com/rianadon/timer-bar-card#customization) section are supported. For an example:
+
+<img alt="Screenshot" src="https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/progressbar-customization.png" width="457" height="202" />
+
+```yaml
+type: custom:opensprinkler-card
+device: 3e0a97a098f4609215aed92fe19bb7fb
+name: Sprinkler
+bars:
+  bar_foreground: pink
+  icon: mdi:tortoise
+  active_icon: mdi:rabbit
+```
 
 ## Manual installation
 

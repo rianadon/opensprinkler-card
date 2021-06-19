@@ -1,4 +1,5 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
+import { TimerBarConfig } from 'timer-bar-card/src/types';
 
 export declare type HassEntity = {
   entity_id: string;
@@ -20,4 +21,5 @@ export interface OpensprinklerCardConfig extends LovelaceCardConfig {
   type: string;
   name?: string;
   device?: string;
+  bars?: TimerBarConfig;
 }

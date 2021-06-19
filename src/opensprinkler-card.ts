@@ -138,10 +138,14 @@ export class OpensprinklerCard extends LitElement {
 
   private _renderStatus(e: HassEntity) {
     const config = fillConfig({
-      type: 'timer-bar-entity-row',
-      entity: e.entity_id,
+      // These two properties can be overridden
       icon: 'mdi:water-outline',
       active_icon: 'mdi:water',
+
+      ...this.config.bars,
+
+      type: 'timer-bar-entity-row',
+      entity: e.entity_id,
       name: e.attributes.name,
     });
     return html`<opensprinkler-timer-bar-entity-row
