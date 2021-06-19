@@ -18,7 +18,7 @@
     "custom-card-helpers": "^1.7.1",
     "home-assistant-js-websocket": "^5.10.0",
     "lit": "^2.0.0-rc.2",
-    "timer-bar-card": "github:rianadon/timer-bar-card"
+    "lovelace-timer-bar-card": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.14.6",

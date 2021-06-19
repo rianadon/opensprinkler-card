@@ -4,7 +4,7 @@ import { HomeAssistant, hasConfigOrEntityChanged, LovelaceCardEditor } from 'cus
 import { PropertyValues } from 'lit-element';
 import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 
-import { fillConfig, TimerBarEntityRow } from 'timer-bar-card/src/timer-bar-entity-row';
+import { fillConfig, TimerBarEntityRow } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import { EntityRegistryEntry, subscribeEntityRegistry } from './ha_entity_registry';
 import type { OpensprinklerCardConfig, HassEntity } from './types';
 import "./editor";
