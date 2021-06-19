@@ -163,4 +163,8 @@ export class OpensprinklerCard extends LitElement {
     if (programs.length > 0) return 'Running ' + programs.join(', ');
     return '';
   }
+
+  public async getCardSize(): Promise<number> {
+    return 1 + this._statusEntities().length;
+  }
 }
