@@ -6,8 +6,6 @@ You will need the [OpenSprinkler integration][opensprinkler-integration] install
 
 ![Screenshots](https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/readme.png)
 
-:warning: **BEWARE**: There are bugs :bug:
-
 ## Install
 
 I haven't published to [HACS][hacs] yet, so there's an extra step here:
