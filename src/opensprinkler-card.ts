@@ -73,7 +73,7 @@ export class OpensprinklerCard extends LitElement {
   }
 
   private _moreInfo() {
-    this.dialog.showDialog({ entityId: 'idk' });
+    this.dialog.showDialog({ config: this.config });
   }
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
@@ -109,7 +109,6 @@ export class OpensprinklerCard extends LitElement {
       this._subscribe();
     }
     if (changedProps.has("hass")) this.dialog.hass = this.hass!;
-    if (changedProps.has("config")) this.dialog.config = this.config;
   }
 
   public disconnectedCallback() {

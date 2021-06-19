@@ -10,7 +10,7 @@ import { EntitiesFunc, hasRunOnce, isController, isProgram,
          isStation, isStationProgEnable, stateStoppable } from "./helpers";
 
 export interface MoreInfoDialogParams {
-  entityId: string | null;
+  config: OpensprinklerCardConfig;
 }
 
 @customElement("opensprinkler-more-info-dialog")
@@ -21,16 +21,14 @@ export class MoreInfoDialog extends LitElement {
 
   @property({ type: Boolean, reflect: true }) public large = false;
 
-  @property() public config!: OpensprinklerCardConfig;
-
-  @state() private _entityId?: string | null;
+  @state() private _config?: OpensprinklerCardConfig | undefined;
 
   @state() private _loading?: string;
   @state() private _stopping?: string;
 
   public showDialog(params: MoreInfoDialogParams) {
-    this._entityId = params.entityId;
-    if (!this._entityId) {
+    this._config = params.config;
+    if (!this._config) {
       this.closeDialog();
       return;
     }
@@ -38,7 +36,7 @@ export class MoreInfoDialog extends LitElement {
   }
 
   public closeDialog() {
-    this._entityId = undefined;
+    this._config = undefined;
     // fireEvent(this, "dialog-closed", { dialog: this.localName });
   }
 
@@ -53,14 +51,7 @@ export class MoreInfoDialog extends LitElement {
   }
 
   protected render() {
-    if (!this._entityId) {
-      return html``;
-    }
-    const entityId = 'binary_sensor.updater';
-    const stateObj = this.hass.states[entityId];
-    const domain = computeDomain(entityId);
-
-    if (!stateObj) {
+    if (!this._config) {
       return html``;
     }
 
@@ -70,7 +61,7 @@ export class MoreInfoDialog extends LitElement {
         @closed=${this.closeDialog}
         .heading=${true}
         hideActions
-        data-domain=${domain}
+        data-domain=${"opensprinkler"}
       >
         <div slot="heading" class="heading">
           <ha-header-bar>
@@ -84,31 +75,12 @@ export class MoreInfoDialog extends LitElement {
               <ha-svg-icon .path=${mdiClose}></ha-svg-icon>
             </mwc-icon-button>
             <div slot="title" class="main-title" @click=${this._enlarge}>
-              ${this.config.name}
+              ${this._config.name}
             </div>
           </ha-header-bar>
         </div>
         <div class="content">
-          <!--<state-card-content in-dialog .stateObj=${stateObj} .hass=${this.hass}></state-card-content>-->
           ${this._renderStates()}
-          <more-info-content
-            .stateObj=${stateObj}
-            .hass=${this.hass}
-          ></more-info-content>
-          ${stateObj.attributes.restored
-            ? html`
-                <p>
-                  ${this.hass.localize(
-                    "ui.dialogs.more_info_control.restored.not_provided"
-                  )}
-                </p>
-                <p>
-                  ${this.hass.localize(
-                    "ui.dialogs.more_info_control.restored.remove_intro"
-                  )}
-                </p>
-              `
-            : ""}
         </div>
       </ha-dialog>
     `;

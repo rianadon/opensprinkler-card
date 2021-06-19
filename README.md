@@ -26,7 +26,7 @@ If you don't have [HACS][hacs] installed, see [manual installation](#manual-inst
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
 
-## Entity id requirements
+## Entity ID requirements
 
 This card locates your OpenSprinkler entities by using their entity ids. If you haven't changed these, you have nothing to worry about.
 
