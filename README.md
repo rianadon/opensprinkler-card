@@ -8,11 +8,7 @@ You will need the [OpenSprinkler integration][opensprinkler-integration] install
 
 ## Install
 
-I haven't published to [HACS][hacs] yet, so there's an extra step here:
-1. Add this repository to custom repositories by clicking the rotated-90-degrees-ellipses icon in the upper right of HACS and selecting custom repositories. Enter https://github.com/rianadon/opensprinkler-card as the url and Lovelace as the category.
-2. Click add repositories and search for "opensprinkler card". Install the card.
-
-If you don't have [HACS][hacs] installed, see [manual installation](#manual-installation).
+OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler card"). If you don't have [HACS][hacs] installed, follow the [manual installation](#manual-installation) instructions.
 
 ## Options
 
