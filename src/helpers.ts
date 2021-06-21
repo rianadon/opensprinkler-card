@@ -1,5 +1,9 @@
 import { HassEntity } from "./types";
 
+export function capitalize(word: string) {
+  return word[0].toUpperCase() + word.substring(1);
+}
+
 export type EntitiesFunc = (predicate: (id: string) => boolean) => HassEntity[];
 
 const MANUAL_ID = 99;

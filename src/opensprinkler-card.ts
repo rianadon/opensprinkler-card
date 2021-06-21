@@ -6,10 +6,11 @@ import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 
 import { fillConfig, TimerBarEntityRow } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import { EntityRegistryEntry, subscribeEntityRegistry } from './ha_entity_registry';
-import type { OpensprinklerCardConfig, HassEntity } from './types';
+import type { ControlType, OpensprinklerCardConfig, HassEntity } from './types';
 import "./editor";
 import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
+import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
 import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isStation, osName, stateActivated, stateWaiting } from './helpers';
 
@@ -66,6 +67,9 @@ export class OpensprinklerCard extends LitElement {
         ></opensprinkler-generic-entity-row>
         <div .style=${entities.length ? 'margin-top: 12px' : ''}>
           ${entities.map(s => this._renderStatus(s))}
+        </div>
+        <div .style=${this.config.card_stations?.length ? 'margin-top: 12px' : ''}>
+          ${this._renderCardStations()}
         </div>
       </div>
     </ha-card>
@@ -151,6 +155,15 @@ export class OpensprinklerCard extends LitElement {
     return html`<opensprinkler-timer-bar-entity-row
       .config=${config} .hass=${this.hass} style="height: 36px">
     </opensprinkler-timer-bar-entity-row>`;
+  }
+
+  private _renderCardStations() {
+    if (!this.config.card_stations) return '';
+    return this.config.card_stations.map(e => {
+      return html`<opensprinkler-control type="station" .entity=${this.hass!.states[e]}
+                   .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
+                ></opensprinkler-control>`;
+    });
   }
 
   private _secondaryText() {

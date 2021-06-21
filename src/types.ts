@@ -1,5 +1,11 @@
 import { LovelaceCardConfig } from 'custom-card-helpers';
-import { TimerBarConfig } from 'timer-bar-card/src/types';
+import { TimerBarConfig } from 'lovelace-timer-bar-card/src/types';
+
+export enum ControlType {
+  Station = "station",
+  Program = "program",
+  RunOnce = "run-once"
+};
 
 export declare type HassEntity = {
   entity_id: string;
@@ -22,4 +28,5 @@ export interface OpensprinklerCardConfig extends LovelaceCardConfig {
   name?: string;
   device?: string;
   bars?: TimerBarConfig;
+  card_stations?: string[];
 }

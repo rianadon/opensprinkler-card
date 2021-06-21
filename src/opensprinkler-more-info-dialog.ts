@@ -1,13 +1,13 @@
-import { mdiClose, mdiPlay, mdiStop } from "@mdi/js";
-import { css, html, LitElement, PropertyValues } from "lit";
+import { mdiClose } from "@mdi/js";
+import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { computeDomain, fireEvent, HomeAssistant } from "custom-card-helpers";
-import { OpensprinklerCardConfig, HassEntity } from "./types";
+import { fireEvent, HomeAssistant } from "custom-card-helpers";
+import { ControlType, OpensprinklerCardConfig, HassEntity } from "./types";
 import "./opensprinkler-state";
+import "./opensprinkler-control";
 import { OpensprinklerCard } from "./opensprinkler-card";
 import { haStyleDialog, haStyleMoreInfo } from "./ha_style";
-import { EntitiesFunc, hasRunOnce, isController, isProgram,
-         isStation, isStationProgEnable, stateStoppable } from "./helpers";
+import { EntitiesFunc, hasRunOnce, isProgram, isStation } from "./helpers";
 
 export interface MoreInfoDialogParams {
   config: OpensprinklerCardConfig;
@@ -23,9 +23,6 @@ export class MoreInfoDialog extends LitElement {
 
   @state() private _config?: OpensprinklerCardConfig | undefined;
 
-  @state() private _loadings: string[] = [];
-  @state() private _stoppings: string[] = [];
-
   public showDialog(params: MoreInfoDialogParams) {
     this._config = params.config;
     if (!this._config) {
@@ -38,16 +35,6 @@ export class MoreInfoDialog extends LitElement {
   public closeDialog() {
     this._config = undefined;
     // fireEvent(this, "dialog-closed", { dialog: this.localName });
-  }
-
-  protected updated(changedProps: PropertyValues) {
-    super.updated(changedProps);
-    if (changedProps.has("hass")) {
-      this._loadings = [];
-      // Only mark a stop operation as complete when all stations have turned off
-      if (this.entities(isStation).every(s => s.state === 'idle'))
-        this._stoppings = [];
-    }
   }
 
   protected render() {
@@ -97,47 +84,17 @@ export class MoreInfoDialog extends LitElement {
     return html`<opensprinkler-state domain=${domain} .config=${config} .hass=${this.hass} @hass-more-info=${this._moreInfo}></opensprinkler-state>`;
   }
 
-  private _renderControl(entity: HassEntity, enabled: boolean | undefined, config: any) {
-    const loading = this._loadings.includes(entity.entity_id) || this._stoppings.includes(entity.entity_id);
-    if (typeof enabled === 'undefined') return html`<hui-warning>Enable switch for entity not found</hui-warning>`;
-
-    return html`<opensprinkler-generic-entity-row .config=${config} .hass=${this.hass} @hass-more-info=${this._moreInfo} style="height: 32px">
-      ${config.state}
-      ${loading ? html`<mwc-circular-progress indeterminate density="-4"></mwc-circular-progress>`
-      : html`<mwc-icon-button label="Run station" class="button" @click=${() => this._toggleEntity(entity)} .disabled=${!enabled}>
-        <ha-svg-icon .path=${_toggleIcon(entity)}></ha-svg-icon>
-      </mwc-icon-button>`}
-    </opensprinkler-generic-entity-row>`;
-  }
-
-  private _renderStation(entity: HassEntity) {
-    const enabled = this._enabled(entity);
-    return this._renderControl(entity, enabled, {
-      entity: entity.entity_id, name: entity.attributes.name,
-      icon: this._stationIcon(entity),
-      state: _stationStatus(entity.state, enabled!),
-    });
-  }
-
-  private _renderProgram(entity: HassEntity) {
-    const enabled = this._enabled(entity);
-    return this._renderControl(entity, enabled, {
-      entity: entity.entity_id, name: entity.attributes.name,
-      icon: this._programIcon(entity),
-      state: _programStatus(entity.state, enabled!),
-    });
-  }
-
-  private _renderRunOnce() {
-    const entity = { entity_id: 'run_once', state: 'on' } as HassEntity;
-    return this._renderControl(entity, true, {
-      name: 'Run Once Program',
-      icon: 'mdi:auto-fix',
-      state: 'Running'
-    });
+  private _renderControl(type: ControlType, entity: HassEntity) {
+    return html`<opensprinkler-control type=${type} .entity=${entity}
+                   .entities=${this.entities} .hass=${this.hass}
+                   @hass-more-info=${this._moreInfo}
+                ></opensprinkler-control>`;
   }
 
   private _renderStates() {
+    const runOnceEntity = { entity_id: 'run_once', state: 'on',
+                            attributes: { name: 'Run Once' } } as any;
+
     return [
       this._renderState('switch', 'opensprinkler_enabled'),
       this._renderState('sensor', 'flow_rate'),
@@ -149,14 +106,14 @@ export class MoreInfoDialog extends LitElement {
       this._renderHeading('Stations'),
     ]
     .concat(this.entities(isStation).map(s => {
-      return this._renderStation(s);
+      return this._renderControl(ControlType.Station, s);
     }))
     .concat([
       this._renderHeading('Programs'),
-      hasRunOnce(this.entities) ? this._renderRunOnce() : html``,
+      hasRunOnce(this.entities) ? this._renderControl(ControlType.RunOnce, runOnceEntity) : html``,
     ])
     .concat(this.entities(isProgram).map(s => {
-      return this._renderProgram(s);
+      return this._renderControl(ControlType.Program, s);
     }));
   }
 
@@ -169,41 +126,13 @@ export class MoreInfoDialog extends LitElement {
     fireEvent(this.parent, "hass-more-info", e.detail);
   }
 
-  private _toggleEntity(entity: HassEntity) {
-    const service = stateStoppable(entity) ? 'stop' : 'run';
-    let entity_id = entity.entity_id;
-
-    const isStoppingProgram = service === 'stop' && entity.entity_id.endsWith('_program_running');
-
-    if (entity_id === 'run_once' || isStoppingProgram) {
-      this._stoppings = [...this._stoppings, entity_id];
-      entity_id = this.entities(isController)[0].entity_id;
-    } else {
-      this._loadings = [...this._loadings, entity_id];
-    }
-
-    this.hass.callService('opensprinkler', service, { entity_id });
-  }
-
   static get styles() {
     return [
       haStyleDialog,
       haStyleMoreInfo,
       css`
-        opensprinkler-state, opensprinkler-generic-entity-row {
+        opensprinkler-state {
           height: 32px;
-        }
-
-        .button {
-          color: var(--secondary-text-color);
-          --mdc-icon-button-size: 40px;
-          margin-right: -8px;
-          margin-left: 4px;
-        }
-
-        mwc-circular-progress {
-          margin-left: 8px;
-          margin-right: -4px;
         }
 
         opensprinkler-state {
@@ -222,44 +151,5 @@ export class MoreInfoDialog extends LitElement {
     ];
   }
 
-  private _enabled(entity: HassEntity): boolean | undefined {
-    const switches = this.entities(isStationProgEnable);
-    return switches.find(e => (
-      e.attributes.index == entity.attributes.index &&
-      e.attributes.opensprinkler_type == entity.attributes.opensprinkler_type
-    ))?.state === 'on';
-  }
 
-  private _stationIcon(entity: HassEntity) {
-    let base = this._enabled(entity) ? 'mdi:water' : 'mdi:water-off';
-    if (entity.state === 'program' || entity.state === 'manual' || entity.state === 'once_program')
-      return base;
-    return base + '-outline';
-  }
-
-  private _programIcon(entity: HassEntity) {
-    let base = this._enabled(entity) ? 'mdi:timer' : 'mdi:timer-off';
-    if (entity.state === 'on')
-      return base;
-    return base + '-outline';
-  }
-}
-
-function _toggleIcon(entity: HassEntity) {
-  return stateStoppable(entity) ? mdiStop : mdiPlay;
-}
-
-function _stationStatus(status: string, enabled: boolean) {
-  if (status === 'idle' && !enabled) return 'Disabled';
-  if (status === 'once_program') return 'Once Program';
-  return _capitalize(status);
-}
-
-function _programStatus(status: string, enabled: boolean) {
-  if (status === 'off' && !enabled) return 'Disabled';
-  return status === 'on' ? 'Running' : 'Off';
-}
-
-function _capitalize(word: string) {
-  return word[0].toUpperCase() + word.substring(1);
 }
