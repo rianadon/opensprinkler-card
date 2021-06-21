@@ -23,10 +23,11 @@ export declare type HassEntity = {
 
 
 // TODO Add your configuration elements here for type-checking
-export interface OpensprinklerCardConfig extends LovelaceCardConfig {
+export interface OpensprinklerCardConfig {
   type: string;
   name?: string;
   device?: string;
   bars?: TimerBarConfig;
   card_stations?: string[];
+  input_number?: string;
 }

@@ -8,6 +8,7 @@ import "./opensprinkler-control";
 import { OpensprinklerCard } from "./opensprinkler-card";
 import { haStyleDialog, haStyleMoreInfo } from "./ha_style";
 import { EntitiesFunc, hasRunOnce, isProgram, isStation } from "./helpers";
+import { renderState } from "./opensprinkler-state";
 
 export interface MoreInfoDialogParams {
   config: OpensprinklerCardConfig;
@@ -79,14 +80,13 @@ export class MoreInfoDialog extends LitElement {
 
   private _renderState(domain: string, suffix: string) {
     const entity = this.entities(id => id.startsWith(domain+'.') && id.endsWith(suffix))[0];
-    if (!entity) return html`<hui-warning>Entity not found</hui-warning>`;
-    const config = { entity: entity.entity_id, name: entity.attributes.friendly_name.replace('OpenSprinkler ', '') };
-    return html`<opensprinkler-state domain=${domain} .config=${config} .hass=${this.hass} @hass-more-info=${this._moreInfo}></opensprinkler-state>`;
+    return renderState(entity.entity_id, this.hass, (e:CustomEvent) => this._moreInfo(e));
   }
 
   private _renderControl(type: ControlType, entity: HassEntity) {
     return html`<opensprinkler-control type=${type} .entity=${entity}
                    .entities=${this.entities} .hass=${this.hass}
+                   .input_number=${this._config!.input_number}
                    @hass-more-info=${this._moreInfo}
                 ></opensprinkler-control>`;
   }
@@ -104,6 +104,7 @@ export class MoreInfoDialog extends LitElement {
       this._renderState('binary_sensor', 'sensor_1_active'),
       this._renderState('binary_sensor', 'sensor_2_active'),
       this._renderHeading('Stations'),
+      this._config!.input_number ? renderState(this._config!.input_number, this.hass) : '',
     ]
     .concat(this.entities(isStation).map(s => {
       return this._renderControl(ControlType.Station, s);
@@ -150,6 +151,4 @@ export class MoreInfoDialog extends LitElement {
       `,
     ];
   }
-
-
 }

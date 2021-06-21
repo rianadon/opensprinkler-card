@@ -3,7 +3,8 @@ import { LitElement, css, html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, state, property } from "lit/decorators";
 import { HomeAssistant } from 'custom-card-helpers';
 
-import { capitalize, EntitiesFunc, isController, isStation,
+import {
+  capitalize, EntitiesFunc, isController, isProgram, isStation,
   isStationProgEnable, osName, stateActivated, stateStoppable } from './helpers';
 import { ControlType, HassEntity } from './types';
 
@@ -15,6 +16,7 @@ export class OpensprinklerControl extends LitElement {
   @property() public controller!: string;
   @property() public entity!: HassEntity;
   @property() public type!: ControlType;
+  @property() public input_number?: string;
 
   @state() private _loading = false;
   @state() private _stopping = false;
@@ -98,7 +100,7 @@ export class OpensprinklerControl extends LitElement {
     const service = stateStoppable(entity) ? 'stop' : 'run';
     let entity_id = entity.entity_id;
 
-    const isStoppingProgram = service === 'stop' && entity.entity_id.endsWith('_program_running');
+    const isStoppingProgram = service === 'stop' && isProgram(entity.entity_id);
 
     if (entity_id === 'run_once' || isStoppingProgram) {
       this._stopping = true;
@@ -107,7 +109,18 @@ export class OpensprinklerControl extends LitElement {
       this._loading = true;
     }
 
-    this.hass.callService('opensprinkler', service, { entity_id });
+    if (service === 'stop' && isStation(entity.entity_id))
+      this.hass.callService('opensprinkler', service, { entity_id });
+    else
+      this.hass.callService('opensprinkler', service, { entity_id, run_seconds: this._runtime() });
+  }
+
+  private _runtime() {
+    if (!this.input_number) return undefined;
+    const entity = this.hass.states[this.input_number];
+    if (!entity) return;
+
+    return Number(entity.state) * 60;
   }
 
   static get styles() {

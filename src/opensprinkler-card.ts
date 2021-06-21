@@ -13,6 +13,7 @@ import "./opensprinkler-more-info-dialog";
 import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
 import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isStation, osName, stateActivated, stateWaiting } from './helpers';
+import { renderState } from './opensprinkler-state';
 
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
@@ -68,9 +69,10 @@ export class OpensprinklerCard extends LitElement {
         <div .style=${entities.length ? 'margin-top: 12px' : ''}>
           ${entities.map(s => this._renderStatus(s))}
         </div>
-        <div .style=${this.config.card_stations?.length ? 'margin-top: 12px' : ''}>
+          ${this.config.card_stations?.length ? html`<div style="margin-top: 12px">
+          ${this.config.input_number ? renderState(this.config.input_number, this.hass!) : ''}
           ${this._renderCardStations()}
-        </div>
+        </div>` : ''}
       </div>
     </ha-card>
     `;
@@ -82,9 +84,6 @@ export class OpensprinklerCard extends LitElement {
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     if (!this.config) return false;
-    if (this.config.entity) {
-      return hasConfigOrEntityChanged(this, changedProps, false);
-    }
 
     const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
     if (!oldHass) return true;
@@ -92,6 +91,9 @@ export class OpensprinklerCard extends LitElement {
     for (const entity of this._matchingEntities(() => true)) {
       if (oldHass.states[entity.entity_id] !== entity) return true;
     }
+    if (this.config.input_number &&
+      oldHass.states[this.config.input_number] !== this.hass?.states[this.config.input_number])
+      return true;
 
     return false;
   }
@@ -162,6 +164,7 @@ export class OpensprinklerCard extends LitElement {
     return this.config.card_stations.map(e => {
       return html`<opensprinkler-control type="station" .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
+                   .input_number=${this.config.input_number}
                 ></opensprinkler-control>`;
     });
   }

@@ -52,14 +52,6 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
     return this._config?.device;
   }
 
-  get _show_warning(): boolean {
-    return this._config?.show_warning || false;
-  }
-
-  get _show_error(): boolean {
-    return this._config?.show_error || false;
-  }
-
   protected render(): TemplateResult | void {
     if (!this.hass || !this._helpers) {
       return html``;

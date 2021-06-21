@@ -31,5 +31,5 @@ export const stateActivated = (entity: HassEntity) => ACTIVE_STATES.includes(ent
 
 export function osName(entity: HassEntity){
     return entity.attributes.name || entity.attributes.friendly_name
-        .replace(/ Station Status$/, '').replace(/ Program Running$/, '');
+        .replace(/ Station Status$/, '').replace(/ Program Running$/, '').replace(/^OpenSprinkler /, '');
 }

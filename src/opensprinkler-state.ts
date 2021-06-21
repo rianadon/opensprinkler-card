@@ -1,10 +1,6 @@
+import { html } from "lit";
 import { EntityConfig, HomeAssistant } from "custom-card-helpers";
-
-const ELEMENTS = {
-  'switch': 'hui-toggle-entity-row',
-  'sensor': 'hui-sensor-entity-row',
-  'binary_sensor': 'hui-text-entity-row',
-}
+import { osName } from "./helpers";
 
 export class OpensprinklerState extends HTMLElement {
   private element?: any;
@@ -12,12 +8,16 @@ export class OpensprinklerState extends HTMLElement {
   private _config?: EntityConfig;
   private _hass?: HomeAssistant;
 
-  connectedCallback() {
-    const domain = this.getAttribute('domain')!;
-    this.element = document.createElement(ELEMENTS[domain]);
+  async connectedCallback() {
+    const helpers = await (window as any).loadCardHelpers();
+    this.element = helpers.createRowElement(this._config);
+
     this.element.hass = this._hass;
-    this.element.setConfig(this._config);
     this.appendChild(this.element);
+  }
+
+  disconnectedCallback() {
+    this.removeChild(this.element);
   }
 
   set hass(hass: HomeAssistant) {
@@ -32,3 +32,11 @@ export class OpensprinklerState extends HTMLElement {
 }
 
 window.customElements.define('opensprinkler-state', OpensprinklerState);
+
+export function renderState(entity_id: string, hass: HomeAssistant, moreInfo?: any) {
+  const entity = hass.states[entity_id];
+  if (!entity) return html`<hui-warning>Entity not found</hui-warning>`;
+  const config = { entity: entity.entity_id, name: osName(entity) };
+
+  return html`<opensprinkler-state .config=${config} .hass=${hass} @hass-more-info=${moreInfo}></opensprinkler-state>`;
+}
