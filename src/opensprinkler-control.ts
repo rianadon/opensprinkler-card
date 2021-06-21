@@ -4,7 +4,7 @@ import { customElement, state, property } from "lit/decorators";
 import { HomeAssistant } from 'custom-card-helpers';
 
 import { capitalize, EntitiesFunc, isController, isStation,
-         isStationProgEnable, stateActivated, stateStoppable } from './helpers';
+  isStationProgEnable, osName, stateActivated, stateStoppable } from './helpers';
 import { ControlType, HassEntity } from './types';
 
 @customElement('opensprinkler-control')
@@ -37,11 +37,11 @@ export class OpensprinklerControl extends LitElement {
     if (typeof enabled === 'undefined') return html`<hui-warning>Enable switch for entity not found</hui-warning>`;
 
     const config = {
-      entity: this.entity.entity_id, name: this.entity.attributes.name,
+      entity: this.entity.entity_id, name: osName(this.entity),
       icon: this._icon(enabled),
     };
 
-    return html`<opensprinkler-generic-entity-row .config=${config} .hass=${this.hass} style="height: 32px">
+    return html`<opensprinkler-generic-entity-row .config=${config} .hass=${this.hass} .stateObj=${this.entity}>
       ${this._state(enabled)}
       ${loading ? html`<mwc-circular-progress indeterminate density="-4"></mwc-circular-progress>`
       : html`<mwc-icon-button label="Run station" class="button" @click=${() => this._toggleEntity(this.entity)} .disabled=${!enabled}>
@@ -112,6 +112,8 @@ export class OpensprinklerControl extends LitElement {
 
   static get styles() {
     return css`
+      opensprinkler-generic-entity-row { height: 32px; }
+
       .button {
         color: var(--secondary-text-color);
         --mdc-icon-button-size: 40px;

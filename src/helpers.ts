@@ -29,4 +29,7 @@ export const stateWaiting   = (entity: HassEntity) => WAITING_STATES.includes(en
 export const stateStoppable = (entity: HassEntity) => STOPPABLE_STATES.includes(entity.state);
 export const stateActivated = (entity: HassEntity) => ACTIVE_STATES.includes(entity.state)
 
-export const osName = (entity: HassEntity) => entity.attributes.name;
+export function osName(entity: HassEntity){
+    return entity.attributes.name || entity.attributes.friendly_name
+        .replace(/ Station Status$/, '').replace(/ Program Running$/, '');
+}

@@ -14,6 +14,8 @@ import { fireEvent, HomeAssistant, computeRTL } from "custom-card-helpers";
 class OpensprinklerGenericEntityRow extends LitElement {
   @property({ attribute: false }) public hass?: HomeAssistant;
 
+  @property() public stateObj?: any;
+
   @property() public config?: any;
 
   @property() public secondaryText?: string;
@@ -31,6 +33,7 @@ class OpensprinklerGenericEntityRow extends LitElement {
         .overrideIcon=${this.config.icon}
         .overrideImage=${this.config.image}
         .stateColor=${this.config.state_color}
+        .stateObj=${this.stateObj}
         @click=${this._handleClick}
       ></state-badge>
       <div
