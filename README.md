@@ -19,7 +19,7 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 | name              | string  | **Optional** | Card title.                                      |
 | bars              | dict    | **Optional** | Configuration for the progress bars              |
 | card_stations     | array   | **Optional** | Sprinkler stations to always show in the card    |
-| input_number      | string  | **Optional** | ID of an entity to use for choosing run duration |
+| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity   |
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
 
@@ -52,7 +52,8 @@ device: 3e0a97a098f4609215aed92fe19bb7fb
 card_stations:
   - sensor.front_lawn_station_status
   - sensor.arbor_drip_station_status
-input_number: input_number.slider
+input_number:
+  entity: input_number.slider
 ```
 
 </td>
@@ -71,6 +72,19 @@ input_number:
 ```
 
 </td> </tr> </table>
+
+You can also use custom cards for the duration control, like [numberbox-card](https://github.com/htmltiger/numberbox-card).
+
+<img alt="Screenshot" src="https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/numberbox-card.png" width="393" height="70" />
+
+```yaml
+...
+input_number:
+  entity: input_number.slider1
+  type: custom:numberbox-card
+  unit: m
+  icon: mdi:timelapse
+```
 
 ## Progress bar customization
 

@@ -54,6 +54,7 @@ export class OpensprinklerCard extends LitElement {
 
   protected render(): TemplateResult | void {
     if (!this.config.device) return html`<hui-warning>No device specified</hui-warning>`;
+    if (this.config.input_number && !this.config.input_number.entity) return html`<hui-warning>input_number.entity must be defined</hui-warning>`;
     if (!this.entities) return html``;
 
     const config = { name: this.config.name, icon: 'mdi:sprinkler-variant', title: true };
@@ -92,7 +93,7 @@ export class OpensprinklerCard extends LitElement {
       if (oldHass.states[entity.entity_id] !== entity) return true;
     }
     if (this.config.input_number &&
-      oldHass.states[this.config.input_number] !== this.hass?.states[this.config.input_number])
+      oldHass.states[this.config.input_number.entity] !== this.hass?.states[this.config.input_number.entity])
       return true;
 
     return false;

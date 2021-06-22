@@ -33,10 +33,17 @@ export class OpensprinklerState extends HTMLElement {
 
 window.customElements.define('opensprinkler-state', OpensprinklerState);
 
-export function renderState(entity_id: string, hass: HomeAssistant, moreInfo?: any) {
-  const entity = hass.states[entity_id];
+export function renderState(entity: string|EntityConfig, hass: HomeAssistant, moreInfo?: any) {
+  let config: EntityConfig;
+
+  if (typeof entity === 'string') {
+    const state = hass.states[entity];
+    config = { entity, name: osName(state) };
+  } else {
+    config = entity;
+  }
+
   if (!entity) return html`<hui-warning>Entity not found</hui-warning>`;
-  const config = { entity: entity.entity_id, name: osName(entity) };
 
   return html`<opensprinkler-state .config=${config} .hass=${hass} @hass-more-info=${moreInfo}></opensprinkler-state>`;
 }
