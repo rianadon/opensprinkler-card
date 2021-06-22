@@ -12,12 +12,14 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 
 ## Options
 
-| Name              | Type    | Requirement  | Description                                       |
-| ----------------- | ------- | ------------ | -------------------------------------------       |
-| type              | string  | **Required** | `custom:opensprinkler-card`                       |
-| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant. |
-| name              | string  | **Optional** | Card title.                                       |
-| bars              | dict    | **Optional** | Configuration for the progress bars               |
+| Name              | Type    | Requirement  | Description                                      |
+| ----------------- | ------- | ------------ | -------------------------------------------      |
+| type              | string  | **Required** | `custom:opensprinkler-card`                      |
+| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant |
+| name              | string  | **Optional** | Card title.                                      |
+| bars              | dict    | **Optional** | Configuration for the progress bars              |
+| card_stations     | array   | **Optional** | Sprinkler stations to always show in the card    |
+| input_number      | string  | **Optional** | ID of an entity to use for choosing run duration |
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
 
@@ -30,6 +32,45 @@ Otherwise, make sure:
 - The ids of Program running binary sensors end with `_program_running`
 - The id of the Opensprinkler Enable switch ends with `opensprinkler_enabled`
 - The ids of program & station enabled switches end with `_enabled`
+
+## Card stations and duration control
+
+By default, the only way to control stations is to first click on the 3 dots in the top-right corner of the card. If you'd like to have a few stations controls always accessible from the dashboard, you can add them to the bottom of the card with the `card_statuses` option.
+
+<img alt="Screenshot" src="https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/input-stations.png" width="455" height="196" />
+
+Stations also default to a runtime of 1 minute. To extend the length they run for, make an `input_number` entity then link it to the card via the `input_number` option. The slider or box input will appear in the popup, and if you are using the `card_statuses` option, in the card as well.
+
+
+<table> <tr>
+<th> Entity configuration </th> <th> Home Assistant configuration.yaml </th>
+</tr> <tr> <td>
+
+```yaml
+type: custom:opensprinkler-card
+device: 3e0a97a098f4609215aed92fe19bb7fb
+card_stations:
+  - sensor.front_lawn_station_status
+  - sensor.arbor_drip_station_status
+input_number: input_number.slider
+```
+
+</td>
+<td>
+
+```yaml
+
+input_number:
+  slider:
+    name: Station Duration
+    initial: 5 # in minutes
+    min: 1
+    max: 30
+    step: 1
+    # You can also use mode: box
+```
+
+</td> </tr> </table>
 
 ## Progress bar customization
 
