@@ -7,7 +7,7 @@ import "./opensprinkler-state";
 import "./opensprinkler-control";
 import { OpensprinklerCard } from "./opensprinkler-card";
 import { haStyleDialog, haStyleMoreInfo } from "./ha_style";
-import { EntitiesFunc, hasRunOnce, isProgram, isStation } from "./helpers";
+import { EntitiesFunc, hasRunOnce, isEnabled, isProgram, isStation } from "./helpers";
 import { renderState } from "./opensprinkler-state";
 
 export interface MoreInfoDialogParams {
@@ -106,7 +106,7 @@ export class MoreInfoDialog extends LitElement {
       this._renderHeading('Stations'),
       this._config!.input_number ? renderState(this._config!.input_number, this.hass) : '',
     ]
-    .concat(this.entities(isStation).map(s => {
+    .concat(this.entities(isStation).filter(s => this._shouldShowStation(s)).map(s => {
       return this._renderControl(ControlType.Station, s);
     }))
     .concat([
@@ -125,6 +125,11 @@ export class MoreInfoDialog extends LitElement {
   private _moreInfo(e: CustomEvent) {
     this.closeDialog();
     fireEvent(this.parent, "hass-more-info", e.detail);
+  }
+
+  private _shouldShowStation(entity: HassEntity) {
+    if (this._config!.hide_disabled) return isEnabled(entity, this.entities);
+    return true;
   }
 
   static get styles() {

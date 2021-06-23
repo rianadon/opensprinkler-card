@@ -33,3 +33,10 @@ export function osName(entity: HassEntity){
     return entity.attributes.name || entity.attributes.friendly_name
         .replace(/ Station Status$/, '').replace(/ Program Running$/, '').replace(/^OpenSprinkler /, '');
 }
+
+export function isEnabled(entity: HassEntity, func: EntitiesFunc) {
+    return func(isStationProgEnable).find(e => (
+      e.attributes.index == entity.attributes.index &&
+      e.attributes.opensprinkler_type == entity.attributes.opensprinkler_type
+    ))?.state === 'on';
+}

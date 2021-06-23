@@ -4,8 +4,8 @@ import { customElement, state, property } from "lit/decorators";
 import { HomeAssistant } from 'custom-card-helpers';
 
 import {
-  capitalize, EntitiesFunc, isController, isProgram, isStation,
-  isStationProgEnable, osName, stateActivated, stateStoppable } from './helpers';
+  capitalize, EntitiesFunc, isController, isEnabled, isProgram, isStation,
+  osName, stateActivated, stateStoppable } from './helpers';
 import { ControlType, HassEntity } from './types';
 
 @customElement('opensprinkler-control')
@@ -89,11 +89,7 @@ export class OpensprinklerControl extends LitElement {
 
   private _enabled(): boolean | undefined {
     if (this.type === ControlType.RunOnce) return true;
-    const switches = this.entities(isStationProgEnable);
-    return switches.find(e => (
-      e.attributes.index == this.entity.attributes.index &&
-      e.attributes.opensprinkler_type == this.entity.attributes.opensprinkler_type
-    ))?.state === 'on';
+    return isEnabled(this.entity, this.entities);
   }
 
   private _toggleEntity(entity: HassEntity) {

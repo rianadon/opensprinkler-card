@@ -18,6 +18,7 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 | device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant |
 | name              | string  | **Optional** | Card title.                                      |
 | bars              | dict    | **Optional** | Configuration for the progress bars              |
+| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations in the popup   |
 | card_stations     | array   | **Optional** | Sprinkler stations to always show in the card    |
 | input_number      | string  | **Optional** | Configuration for run-duration-choosing entity   |
 
