@@ -1,7 +1,7 @@
 import { mdiClose } from "@mdi/js";
 import { css, html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators";
-import { fireEvent, HomeAssistant } from "custom-card-helpers";
+import { computeRTL, fireEvent, HomeAssistant } from "custom-card-helpers";
 import { ControlType, OpensprinklerCardConfig, HassEntity } from "./types";
 import "./opensprinkler-state";
 import "./opensprinkler-control";
@@ -43,6 +43,8 @@ export class MoreInfoDialog extends LitElement {
       return html``;
     }
 
+    const style = computeRTL(this.hass) ? 'direction: rtl' : '';
+
     return html`
       <ha-dialog
         open
@@ -50,6 +52,7 @@ export class MoreInfoDialog extends LitElement {
         .heading=${true}
         hideActions
         data-domain=${"opensprinkler"}
+        style=${style}
       >
         <div slot="heading" class="heading">
           <ha-header-bar>

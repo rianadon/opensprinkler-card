@@ -1,12 +1,12 @@
 import { LitElement, html, TemplateResult } from 'lit';
 import { customElement, state, property } from "lit/decorators";
-import { HomeAssistant, hasConfigOrEntityChanged, LovelaceCardEditor } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
 import { PropertyValues } from 'lit-element';
 import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 
 import { fillConfig, TimerBarEntityRow } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import { EntityRegistryEntry, subscribeEntityRegistry } from './ha_entity_registry';
-import type { ControlType, OpensprinklerCardConfig, HassEntity } from './types';
+import type { OpensprinklerCardConfig, HassEntity } from './types';
 import "./editor";
 import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
@@ -86,6 +86,7 @@ export class OpensprinklerCard extends LitElement {
 
   protected shouldUpdate(changedProps: PropertyValues): boolean {
     if (!this.config) return false;
+    if (changedProps.has('config')) return true;
 
     const oldHass = changedProps.get('hass') as HomeAssistant | undefined;
     if (!oldHass) return true;
@@ -93,9 +94,9 @@ export class OpensprinklerCard extends LitElement {
     for (const entity of this._matchingEntities(() => true)) {
       if (oldHass.states[entity.entity_id] !== entity) return true;
     }
-    if (this.config.input_number &&
-      oldHass.states[this.config.input_number.entity] !== this.hass?.states[this.config.input_number.entity])
-      return true;
+
+    const input = this.config.input_number?.entity;
+    if (input && oldHass.states[input] !== this.hass?.states[input]) return true;
 
     return false;
   }

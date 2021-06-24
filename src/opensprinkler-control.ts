@@ -3,8 +3,10 @@ import { LitElement, css, html, TemplateResult, PropertyValues } from 'lit';
 import { customElement, state, property } from "lit/decorators";
 import { HomeAssistant } from 'custom-card-helpers';
 
+import { localize } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
+
 import {
-  capitalize, EntitiesFunc, isController, isEnabled, isProgram, isStation,
+  EntitiesFunc, isController, isEnabled, isProgram, isStation,
   osName, stateActivated, stateStoppable } from './helpers';
 import { ControlType, HassEntity } from './types';
 
@@ -57,7 +59,7 @@ export class OpensprinklerControl extends LitElement {
     if (this.type === ControlType.Station) {
       if (this.entity.state === 'idle' && !enabled) return 'Disabled';
       if (this.entity.state === 'once_program') return 'Once Program';
-      return capitalize(this.entity.state);
+      return localize(this.hass, this.entity.state, this.entity);
     }
     if (this.type === ControlType.Program) {
       if (status === 'off' && !enabled) return 'Disabled';
@@ -126,13 +128,13 @@ export class OpensprinklerControl extends LitElement {
       .button {
         color: var(--secondary-text-color);
         --mdc-icon-button-size: 40px;
-        margin-right: -8px;
-        margin-left: 4px;
+        margin-inline-end: -8px;
+        margin-inline-start: 4px;
       }
 
       mwc-circular-progress {
-        margin-left: 8px;
-        margin-right: -4px;
+        margin-inline-start: 8px;
+        margin-inline-end: -4px;
       }
     `;
   }

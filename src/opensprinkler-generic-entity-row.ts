@@ -52,7 +52,7 @@ class OpensprinklerGenericEntityRow extends LitElement {
         label="Open more info"
         @click=${this._handleClick}
         tabindex="0"
-        style="margin-right: -8px"
+        style="margin-inline-end: -8px"
       >
         <ha-svg-icon .path=${mdiDotsVertical}></ha-svg-icon>
       </mwc-icon-button>
