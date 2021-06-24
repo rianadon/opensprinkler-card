@@ -165,7 +165,7 @@ export class OpensprinklerCard extends LitElement {
     return this.config.card_stations.map(e => {
       return html`<opensprinkler-control type="station" .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
-                   .input_number=${this.config.input_number}
+                   .input_number=${this.config.input_number?.entity}
                 ></opensprinkler-control>`;
     });
   }

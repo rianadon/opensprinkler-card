@@ -86,7 +86,7 @@ export class MoreInfoDialog extends LitElement {
   private _renderControl(type: ControlType, entity: HassEntity) {
     return html`<opensprinkler-control type=${type} .entity=${entity}
                    .entities=${this.entities} .hass=${this.hass}
-                   .input_number=${this._config!.input_number}
+                   .input_number=${this._config!.input_number?.entity}
                    @hass-more-info=${this._moreInfo}
                 ></opensprinkler-control>`;
   }
