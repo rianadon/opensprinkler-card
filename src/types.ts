@@ -26,6 +26,7 @@ export declare type HassEntity = {
 export interface OpensprinklerCardConfig {
   type: string;
   name?: string;
+  icon?: string;
   device?: string;
   bars?: TimerBarConfig;
   card_stations?: string[];
