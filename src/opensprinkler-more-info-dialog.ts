@@ -1,8 +1,9 @@
 import { mdiClose } from "@mdi/js";
-import { css, html, LitElement } from "lit";
+import { html, LitElement } from "lit";
 import { customElement, property, state } from "lit/decorators";
 import { computeRTL, fireEvent, HomeAssistant } from "custom-card-helpers";
-import { ControlType, OpensprinklerCardConfig, HassEntity } from "./types";
+import { OpensprinklerCardConfig, HassEntity } from "./types";
+import { styles } from "./styles";
 import "./opensprinkler-state";
 import "./opensprinkler-control";
 import { OpensprinklerCard } from "./opensprinkler-card";
@@ -139,21 +140,7 @@ export class MoreInfoDialog extends LitElement {
     return [
       haStyleDialog,
       haStyleMoreInfo,
-      css`
-        opensprinkler-state {
-          height: 32px;
-          color: var(--primary-text-color);
-          display: flex;
-          justify-content: center;
-          flex-direction: column;
-        }
-
-        .header {
-          margin-left: 56px;
-          margin-top: 16px;
-          color: var(--secondary-text-color);
-        }
-      `,
+      styles,
     ];
   }
 }

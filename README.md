@@ -74,9 +74,14 @@ input_number:
 
 </td> </tr> </table>
 
-You can also use custom cards for the duration control, like [numberbox-card](https://github.com/htmltiger/numberbox-card).
+You can also use custom cards for the duration control, like [numberbox-card](https://github.com/htmltiger/numberbox-card). As well as headings inside the `extra_entities`! (anything without a `.` is a heading)
 
-<img alt="Screenshot" src="https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/numberbox-card.png" width="393" height="70" />
+<table> <tr>
+<td>
+
+<img alt="Screenshot" src="https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/numberbox-images.png" width="375" height="331" />
+
+</td> <td>
 
 ```yaml
 ...
@@ -85,7 +90,17 @@ input_number:
   type: custom:numberbox-card
   unit: m
   icon: mdi:timelapse
+extra_entities:
+  - Stations
+  - sensor.front_lawn_station_status
+  - sensor.arbor_drip_station_status
+  - sensor.s15_station_status
+  - Sensors
+  - sensor.opensprinkler_water_level
+  - sensor.upstairs_humidity
 ```
+
+</td> </tr> </table>
 
 ## Progress bar customization
 

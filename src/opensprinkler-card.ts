@@ -7,6 +7,7 @@ import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 import { fillConfig, TimerBarEntityRow } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import { EntityRegistryEntry, subscribeEntityRegistry } from './ha_entity_registry';
 import { OpensprinklerCardConfig, HassEntity, ControlType } from './types';
+import { styles } from './styles';
 import "./editor";
 import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
@@ -166,6 +167,7 @@ export class OpensprinklerCard extends LitElement {
   private _renderExtraEntities() {
     if (!this.config.extra_entities) return '';
     return this.config.extra_entities.map(e => {
+      if (!e.includes('.')) return html`<div role="heading" class="header">${e}</div>`;
       if (getControlType(e) === ControlType.State) return renderState(e, this.hass!);
       return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
@@ -189,14 +191,5 @@ export class OpensprinklerCard extends LitElement {
     return 1 + this._statusEntities().length;
   }
 
-  static styles = css`
-    .extras { margin-top: 12px; }
-    .extras opensprinkler-state {
-      height: 32px;
-      color: var(--primary-text-color);
-      display: flex;
-      justify-content: center;
-      flex-direction: column;
-    }
-  `;
+  static styles = [styles, css`.header { margin-top: 8px; }`];
 }
