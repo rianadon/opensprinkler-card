@@ -86,8 +86,8 @@ export class MoreInfoDialog extends LitElement {
     return renderState(entity.entity_id, this.hass, (e:CustomEvent) => this._moreInfo(e));
   }
 
-  private _renderControl(type: ControlType, entity: HassEntity) {
-    return html`<opensprinkler-control type=${type} .entity=${entity}
+  private _renderControl(entity: HassEntity) {
+    return html`<opensprinkler-control .entity=${entity}
                    .entities=${this.entities} .hass=${this.hass}
                    .input_number=${this._config!.input_number?.entity}
                    @hass-more-info=${this._moreInfo}
@@ -110,14 +110,14 @@ export class MoreInfoDialog extends LitElement {
       this._config!.input_number ? renderState(this._config!.input_number, this.hass) : '',
     ]
     .concat(this.entities(isStation).filter(s => this._shouldShowStation(s)).map(s => {
-      return this._renderControl(ControlType.Station, s);
+      return this._renderControl(s);
     }))
     .concat([
       this._renderHeading('Programs'),
-      hasRunOnce(this.entities) ? this._renderControl(ControlType.RunOnce, runOnceEntity) : html``,
+      hasRunOnce(this.entities) ? this._renderControl(runOnceEntity) : html``,
     ])
     .concat(this.entities(isProgram).map(s => {
-      return this._renderControl(ControlType.Program, s);
+      return this._renderControl(s);
     }));
   }
 

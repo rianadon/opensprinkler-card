@@ -4,7 +4,8 @@ import { TimerBarConfig } from 'lovelace-timer-bar-card/src/types';
 export enum ControlType {
   Station = "station",
   Program = "program",
-  RunOnce = "run-once"
+  RunOnce = "run-once",
+  State = "state"
 };
 
 export declare type HassEntity = {

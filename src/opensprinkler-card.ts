@@ -6,13 +6,13 @@ import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 
 import { fillConfig, TimerBarEntityRow } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import { EntityRegistryEntry, subscribeEntityRegistry } from './ha_entity_registry';
-import type { OpensprinklerCardConfig, HassEntity } from './types';
+import { OpensprinklerCardConfig, HassEntity, ControlType } from './types';
 import "./editor";
 import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
 import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
-import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isStation, osName, stateActivated, stateWaiting } from './helpers';
+import { EntitiesFunc, getControlType, hasManual, hasRunOnce, isProgram, isStation, osName, stateActivated, stateWaiting } from './helpers';
 import { renderState } from './opensprinkler-state';
 
 // This puts your card into the UI card picker dialog
@@ -165,7 +165,8 @@ export class OpensprinklerCard extends LitElement {
   private _renderCardStations() {
     if (!this.config.card_stations) return '';
     return this.config.card_stations.map(e => {
-      return html`<opensprinkler-control type="station" .entity=${this.hass!.states[e]}
+      if (getControlType(e) === ControlType.State) return renderState(e, this.hass!);
+      return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
                    .input_number=${this.config.input_number?.entity}
                 ></opensprinkler-control>`;

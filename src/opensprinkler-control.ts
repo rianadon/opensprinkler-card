@@ -6,7 +6,7 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { localize } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 
 import {
-  EntitiesFunc, isController, isEnabled, isProgram, isStation,
+  EntitiesFunc, getControlType, isController, isEnabled, isProgram, isStation,
   osName, stateActivated, stateStoppable } from './helpers';
 import { ControlType, HassEntity } from './types';
 
@@ -17,7 +17,6 @@ export class OpensprinklerControl extends LitElement {
   @property({ attribute: false }) public entities!: EntitiesFunc;
   @property() public controller!: string;
   @property() public entity!: HassEntity;
-  @property() public type!: ControlType;
   @property() public input_number?: string;
 
   @state() private _loading = false;
@@ -55,13 +54,13 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _state(enabled: boolean) {
-    if (this.type === ControlType.RunOnce) return 'Running';
-    if (this.type === ControlType.Station) {
+    if (this._type() === ControlType.RunOnce) return 'Running';
+    if (this._type() === ControlType.Station) {
       if (this.entity.state === 'idle' && !enabled) return 'Disabled';
       if (this.entity.state === 'once_program') return 'Once Program';
       return localize(this.hass, this.entity.state, this.entity);
     }
-    if (this.type === ControlType.Program) {
+    if (this._type() === ControlType.Program) {
       if (status === 'off' && !enabled) return 'Disabled';
       return status === 'on' ? 'Running' : 'Off';
     }
@@ -69,14 +68,14 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _icon(enabled: boolean) {
-    if (this.type === ControlType.RunOnce) return 'mdi:auto-fix';
-    if (this.type === ControlType.Station) {
+    if (this._type() === ControlType.RunOnce) return 'mdi:auto-fix';
+    if (this._type() === ControlType.Station) {
       let base = enabled ? 'mdi:water' : 'mdi:water-off';
       if (stateActivated(this.entity))
         return base;
       return base + '-outline';
     }
-    if (this.type === ControlType.Program) {
+    if (this._type() === ControlType.Program) {
       let base = enabled ? 'mdi:timer' : 'mdi:timer-off';
       if (this.entity.state === 'on')
         return base;
@@ -90,7 +89,7 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _enabled(): boolean | undefined {
-    if (this.type === ControlType.RunOnce) return true;
+    if (this._type() === ControlType.RunOnce) return true;
     return isEnabled(this.entity, this.entities);
   }
 
@@ -119,6 +118,10 @@ export class OpensprinklerControl extends LitElement {
     if (!entity) return;
 
     return Number(entity.state) * 60;
+  }
+
+  private _type() {
+    return getControlType(this.entity.entity_id);
   }
 
   static get styles() {
