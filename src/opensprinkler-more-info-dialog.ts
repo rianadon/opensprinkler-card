@@ -142,9 +142,6 @@ export class MoreInfoDialog extends LitElement {
       css`
         opensprinkler-state {
           height: 32px;
-        }
-
-        opensprinkler-state {
           color: var(--primary-text-color);
           display: flex;
           justify-content: center;

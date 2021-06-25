@@ -20,7 +20,7 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 | icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")         |
 | bars              | dict    | **Optional** | Configuration for the progress bars              |
 | hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations in the popup   |
-| card_stations     | array   | **Optional** | Sprinkler stations to always show in the card    |
+| extra_entities    | array   | **Optional** | Entities to always show in the card              |
 | input_number      | string  | **Optional** | Configuration for run-duration-choosing entity   |
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
@@ -35,14 +35,13 @@ Otherwise, make sure:
 - The id of the Opensprinkler Enable switch ends with `opensprinkler_enabled`
 - The ids of program & station enabled switches end with `_enabled`
 
-## Card stations and duration control
+## Extra entities and duration control
 
-By default, the only way to control stations is to first click on the 3 dots in the top-right corner of the card. If you'd like to have a few stations controls always accessible from the dashboard, you can add them to the bottom of the card with the `card_statuses` option.
+By default, the only way to control stations is to first click on the 3 dots in the top-right corner of the card. If you'd like to have a few stations controls always accessible from the dashboard, you can add them to the bottom of the card with the `extra_entities` option. You can also add programs or even any entity type (`switch`es, `light`s, etc).
 
 <img alt="Screenshot" src="https://raw.githubusercontent.com/rianadon/opensprinkler-card/main/images/input-stations.png" width="455" height="196" />
 
-Stations also default to a runtime of 1 minute. To extend the length they run for, make an `input_number` entity then link it to the card via the `input_number` option. The slider or box input will appear in the popup, and if you are using the `card_statuses` option, in the card as well.
-
+Stations also default to a runtime of 1 minute. To extend the length they run for, make an `input_number` entity then link it to the card via the `input_number` option. The slider or box input will appear in the popup, and if you are using the `extra_entities` option, in the card as well.
 
 <table> <tr>
 <th> Entity configuration </th> <th> Home Assistant configuration.yaml </th>
@@ -51,7 +50,7 @@ Stations also default to a runtime of 1 minute. To extend the length they run fo
 ```yaml
 type: custom:opensprinkler-card
 device: 3e0a97a098f4609215aed92fe19bb7fb
-card_stations:
+extra_entities:
   - sensor.front_lawn_station_status
   - sensor.arbor_drip_station_status
 input_number:

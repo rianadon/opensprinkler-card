@@ -36,14 +36,15 @@ window.customElements.define('opensprinkler-state', OpensprinklerState);
 export function renderState(entity: string|EntityConfig, hass: HomeAssistant, moreInfo?: any) {
   let config: EntityConfig;
 
+  if (!entity) return html`<hui-warning>Entity not found</hui-warning>`;
+
   if (typeof entity === 'string') {
     const state = hass.states[entity];
+    if (!state) return html`<hui-warning>Entity ${entity} not found</hui-warning>`;
     config = { entity, name: osName(state) };
   } else {
     config = entity;
   }
-
-  if (!entity) return html`<hui-warning>Entity not found</hui-warning>`;
 
   return html`<opensprinkler-state .config=${config} .hass=${hass} @hass-more-info=${moreInfo}></opensprinkler-state>`;
 }

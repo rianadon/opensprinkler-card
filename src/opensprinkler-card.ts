@@ -1,4 +1,4 @@
-import { LitElement, html, TemplateResult } from 'lit';
+import { LitElement, css, html, TemplateResult } from 'lit';
 import { customElement, state, property } from "lit/decorators";
 import { HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
 import { PropertyValues } from 'lit-element';
@@ -71,9 +71,10 @@ export class OpensprinklerCard extends LitElement {
         <div .style=${entities.length ? 'margin-top: 12px' : ''}>
           ${entities.map(s => this._renderStatus(s))}
         </div>
-          ${this.config.card_stations?.length ? html`<div style="margin-top: 12px">
+          ${ (this.config as any).card_stations ? html`<hui-warning>card_stations has been renamed to extra_entities</hui-warning>` : ''}
+          ${this.config.extra_entities ?.length ? html`<div class="extras">
           ${this.config.input_number ? renderState(this.config.input_number, this.hass!) : ''}
-          ${this._renderCardStations()}
+          ${this._renderExtraEntities()}
         </div>` : ''}
       </div>
     </ha-card>
@@ -162,9 +163,9 @@ export class OpensprinklerCard extends LitElement {
     </opensprinkler-timer-bar-entity-row>`;
   }
 
-  private _renderCardStations() {
-    if (!this.config.card_stations) return '';
-    return this.config.card_stations.map(e => {
+  private _renderExtraEntities() {
+    if (!this.config.extra_entities) return '';
+    return this.config.extra_entities.map(e => {
       if (getControlType(e) === ControlType.State) return renderState(e, this.hass!);
       return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
@@ -187,4 +188,15 @@ export class OpensprinklerCard extends LitElement {
   public async getCardSize(): Promise<number> {
     return 1 + this._statusEntities().length;
   }
+
+  static styles = css`
+    .extras { margin-top: 12px; }
+    .extras opensprinkler-state {
+      height: 32px;
+      color: var(--primary-text-color);
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+  `;
 }

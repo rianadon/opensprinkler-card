@@ -30,7 +30,7 @@ export interface OpensprinklerCardConfig {
   icon?: string;
   device?: string;
   bars?: TimerBarConfig;
-  card_stations?: string[];
+  extra_entities?: string[];
   input_number?: EntityConfig;
   hide_disabled?: boolean;
 }
