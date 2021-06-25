@@ -30,9 +30,9 @@ Finding device ids is tricky, so I recommend using the dropdown in the visual ca
 This card locates your OpenSprinkler entities by using their entity ids. If you haven't changed these, you have nothing to worry about.
 
 Otherwise, make sure:
-- The ids of Station status sensors end with `_status`
-- The ids of Program running binary sensors end with `_program_running`
-- The id of the Opensprinkler Enable switch ends with `opensprinkler_enabled`
+- The ids of station status sensors end with `_status`
+- The ids of program running binary sensors end with `_program_running`
+- The id of the OpenSprinkler controller enabled switch ends with `_enabled`
 - The ids of program & station enabled switches end with `_enabled`
 
 ## Extra entities and duration control

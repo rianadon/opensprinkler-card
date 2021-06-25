@@ -2,6 +2,7 @@ import { EntityConfig } from 'custom-card-helpers';
 import { TimerBarConfig } from 'lovelace-timer-bar-card/src/types';
 
 export enum ControlType {
+  Controller = "controller",
   Station = "station",
   Program = "program",
   RunOnce = "run-once",

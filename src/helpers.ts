@@ -1,6 +1,6 @@
 import { ControlType, HassEntity } from "./types";
 
-export type EntitiesFunc = (predicate: (id: string) => boolean) => HassEntity[];
+export type EntitiesFunc = (predicate: (entity: HassEntity) => boolean) => HassEntity[];
 
 const MANUAL_ID = 99;
 const RUN_ONCE_ID = 254;
@@ -9,17 +9,28 @@ const WAITING_STATES = ['waiting'];
 const ACTIVE_STATES = ['program', 'once_program', 'manual', 'on'];
 const STOPPABLE_STATES = [...ACTIVE_STATES, ...WAITING_STATES]
 
-export const isStation    = (id: string) => id.startsWith('sensor.') && id.endsWith('_status');
-export const isProgram    = (id: string) => id.startsWith('binary_sensor.') && id.endsWith('_program_running');
-export const isController = (id: string) => id.startsWith('switch.') && id.endsWith('opensprinkler_enabled');
-export const isRunOnce = (id: string) => id === 'run_once';
-export const isStationProgEnable = (id: string) => id.startsWith('switch.') && id.endsWith('_enabled');
+export const isStation    = (entity: HassEntity) =>
+    entity.attributes?.opensprinkler_type === ControlType.Station &&
+    entity.entity_id.startsWith('sensor.') &&
+    entity.entity_id.endsWith('_status');
+export const isProgram    = (entity: HassEntity) =>
+    entity.attributes?.opensprinkler_type === ControlType.Program &&
+    entity.entity_id.startsWith('binary_sensor.') &&
+    entity.entity_id.endsWith('_program_running');
+export const isController = (entity: HassEntity) =>
+    entity.attributes?.opensprinkler_type === ControlType.Controller &&
+    entity.entity_id.startsWith('switch.') &&
+    entity.entity_id.endsWith('_enabled');
+export const isRunOnce = (entity: HassEntity) => entity.entity_id === 'run_once';
+export const isStationProgEnable = (entity: HassEntity) =>
+    entity.entity_id.startsWith('switch.') && entity.entity_id.endsWith('_enabled');
 
-export const getControlType = (id: string) => {
+export const getControlType = (entity: HassEntity) => {
     switch (true) {
-        case isStation(id): return ControlType.Station;
-        case isProgram(id): return ControlType.Program;
-        case isRunOnce(id): return ControlType.RunOnce;
+        case isController(entity): return ControlType.Controller;
+        case isStation(entity): return ControlType.Station;
+        case isProgram(entity): return ControlType.Program;
+        case isRunOnce(entity): return ControlType.RunOnce;
         default: return ControlType.State;
     }
 }

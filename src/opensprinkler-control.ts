@@ -97,7 +97,7 @@ export class OpensprinklerControl extends LitElement {
     const service = stateStoppable(entity) ? 'stop' : 'run';
     let entity_id = entity.entity_id;
 
-    const isStoppingProgram = service === 'stop' && isProgram(entity.entity_id);
+    const isStoppingProgram = service === 'stop' && isProgram(entity);
 
     if (entity_id === 'run_once' || isStoppingProgram) {
       this._stopping = true;
@@ -106,7 +106,7 @@ export class OpensprinklerControl extends LitElement {
       this._loading = true;
     }
 
-    if (service === 'stop' && isStation(entity.entity_id))
+    if (service === 'stop' && isStation(entity))
       this.hass.callService('opensprinkler', service, { entity_id });
     else
       this.hass.callService('opensprinkler', service, { entity_id, run_seconds: this._runtime() });
@@ -121,7 +121,7 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _type() {
-    return getControlType(this.entity.entity_id);
+    return getControlType(this.entity);
   }
 
   static get styles() {

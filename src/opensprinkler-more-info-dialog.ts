@@ -83,7 +83,7 @@ export class MoreInfoDialog extends LitElement {
   }
 
   private _renderState(domain: string, suffix: string) {
-    const entity = this.entities(id => id.startsWith(domain+'.') && id.endsWith(suffix))[0];
+    const entity = this.entities(entity => entity.entity_id.startsWith(domain+'.') && entity.entity_id.endsWith(suffix))[0];
     return renderState(entity.entity_id, this.hass, (e:CustomEvent) => this._moreInfo(e));
   }
 
