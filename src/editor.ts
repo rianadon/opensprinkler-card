@@ -1,16 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/camelcase */
-import {
-  LitElement,
-  html,
-  customElement,
-  property,
-  TemplateResult,
-  CSSResult,
-  css,
-  internalProperty,
-} from 'lit-element';
-import { HomeAssistant, fireEvent, LovelaceCardEditor, ActionConfig } from 'custom-card-helpers';
+import { LitElement, html, TemplateResult, CSSResultGroup, css } from 'lit';
+import { customElement, state, property } from "lit/decorators";
+import { HomeAssistant, fireEvent, LovelaceCardEditor } from 'custom-card-helpers';
 
 import { OpensprinklerCardConfig } from './types';
 
@@ -25,9 +17,9 @@ const options = {
 @customElement('opensprinkler-card-editor')
 export class BoilerplateCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
-  @internalProperty() private _config?: OpensprinklerCardConfig;
-  @internalProperty() private _toggle?: boolean;
-  @internalProperty() private _helpers?: any;
+  @state() private _config?: OpensprinklerCardConfig;
+  @state() private _toggle?: boolean;
+  @state() private _helpers?: any;
   private _initialized = false;
 
   public setConfig(config: OpensprinklerCardConfig): void {
@@ -120,7 +112,7 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
     fireEvent(this, 'config-changed', { config: this._config });
   }
 
-  static get styles(): CSSResult {
+  static get styles(): CSSResultGroup {
     return css`
       .option {
         padding: 4px 0px;
