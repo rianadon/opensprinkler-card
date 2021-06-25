@@ -110,14 +110,14 @@ export class MoreInfoDialog extends LitElement {
       this._renderHeading('Stations'),
       this._config!.input_number ? renderState(this._config!.input_number, this.hass) : '',
     ]
-    .concat(this.entities(isStation).filter(s => this._shouldShowStation(s)).map(s => {
+    .concat(this.entities(isStation).filter(s => this._shouldShowEntity(s)).map(s => {
       return this._renderControl(s);
     }))
     .concat([
       this._renderHeading('Programs'),
       hasRunOnce(this.entities) ? this._renderControl(runOnceEntity) : html``,
     ])
-    .concat(this.entities(isProgram).map(s => {
+    .concat(this.entities(isProgram).filter(s => this._shouldShowEntity(s)).map(s => {
       return this._renderControl(s);
     }));
   }
@@ -131,7 +131,7 @@ export class MoreInfoDialog extends LitElement {
     fireEvent(this.parent, "hass-more-info", e.detail);
   }
 
-  private _shouldShowStation(entity: HassEntity) {
+  private _shouldShowEntity(entity: HassEntity) {
     if (this._config!.hide_disabled) return isEnabled(entity, this.entities);
     return true;
   }
