@@ -1,4 +1,4 @@
-import { HassEntity } from "./types";
+import { ControlType, HassEntity } from "./types";
 
 export type EntitiesFunc = (predicate: (id: string) => boolean) => HassEntity[];
 
@@ -12,7 +12,17 @@ const STOPPABLE_STATES = [...ACTIVE_STATES, ...WAITING_STATES]
 export const isStation    = (id: string) => id.startsWith('sensor.') && id.endsWith('_status');
 export const isProgram    = (id: string) => id.startsWith('binary_sensor.') && id.endsWith('_program_running');
 export const isController = (id: string) => id.startsWith('switch.') && id.endsWith('opensprinkler_enabled');
+export const isRunOnce = (id: string) => id === 'run_once';
 export const isStationProgEnable = (id: string) => id.startsWith('switch.') && id.endsWith('_enabled');
+
+export const getControlType = (id: string) => {
+    switch (true) {
+        case isStation(id): return ControlType.Station;
+        case isProgram(id): return ControlType.Program;
+        case isRunOnce(id): return ControlType.RunOnce;
+        default: return ControlType.State;
+    }
+}
 
 export function hasRunOnce(entities: EntitiesFunc) {
     return entities(isStation).some(e => e.attributes.running_program_id === RUN_ONCE_ID);
