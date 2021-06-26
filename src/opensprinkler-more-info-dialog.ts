@@ -8,7 +8,7 @@ import "./opensprinkler-state";
 import "./opensprinkler-control";
 import { OpensprinklerCard } from "./opensprinkler-card";
 import { haStyleDialog, haStyleMoreInfo } from "./ha_style";
-import { EntitiesFunc, hasRunOnce, isEnabled, isProgram, isStation } from "./helpers";
+import { EntitiesFunc, hasRunOnce, isController, isEnabled, isProgram, isState, isStation } from "./helpers";
 import { renderState } from "./opensprinkler-state";
 
 export interface MoreInfoDialogParams {
@@ -73,6 +73,8 @@ export class MoreInfoDialog extends LitElement {
         </div>
         <div class="content">
           ${this._renderStates()}
+          ${this._renderStations()}
+          ${this._renderPrograms()}
         </div>
       </ha-dialog>
     `;
@@ -82,8 +84,7 @@ export class MoreInfoDialog extends LitElement {
     return html`<div role="heading" class="header">${title}</div>`;
   }
 
-  private _renderState(domain: string, suffix: string) {
-    const entity = this.entities(entity => entity.entity_id.startsWith(domain+'.') && entity.entity_id.endsWith(suffix))[0];
+  private _renderState(entity: HassEntity) {
     return renderState(entity.entity_id, this.hass, (e:CustomEvent) => this._moreInfo(e));
   }
 
@@ -96,28 +97,29 @@ export class MoreInfoDialog extends LitElement {
   }
 
   private _renderStates() {
-    const runOnceEntity = { entity_id: 'run_once', state: 'on',
-                            attributes: { name: 'Run Once' } } as any;
+    return this.entities(isController).map(s => {
+      return this._renderState(s);
+    }).concat(this.entities(isState).map(s => {
+      return this._renderState(s);
+    }));
+  }
 
+  private _renderStations() {
     return [
-      this._renderState('switch', 'opensprinkler_enabled'),
-      this._renderState('sensor', 'flow_rate'),
-      this._renderState('binary_sensor', 'rain_delay_active'),
-      this._renderState('sensor', 'rain_delay_stop_time'),
-      this._renderState('sensor', 'water_level'),
-      this._renderState('binary_sensor', 'sensor_1_active'),
-      this._renderState('binary_sensor', 'sensor_2_active'),
       this._renderHeading('Stations'),
       this._config!.input_number ? renderState(this._config!.input_number, this.hass) : '',
-    ]
-    .concat(this.entities(isStation).filter(s => this._shouldShowEntity(s)).map(s => {
+    ].concat(this.entities(isStation).filter(s => this._shouldShowEntity(s)).map(s => {
       return this._renderControl(s);
-    }))
-    .concat([
+    }));
+  }
+
+  private _renderPrograms() {
+    const runOnceEntity = { entity_id: 'run_once', state: 'on',
+                            attributes: { name: 'Run Once' } } as any;
+    return [
       this._renderHeading('Programs'),
       hasRunOnce(this.entities) ? this._renderControl(runOnceEntity) : html``,
-    ])
-    .concat(this.entities(isProgram).filter(s => this._shouldShowEntity(s)).map(s => {
+    ].concat(this.entities(isProgram).filter(s => this._shouldShowEntity(s)).map(s => {
       return this._renderControl(s);
     }));
   }

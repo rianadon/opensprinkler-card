@@ -22,6 +22,7 @@ export const isController = (entity: HassEntity) =>
     entity.entity_id.startsWith('switch.') &&
     entity.entity_id.endsWith('_enabled');
 export const isRunOnce = (entity: HassEntity) => entity.entity_id === 'run_once';
+export const isState = (entity: HassEntity) => !entity.attributes?.opensprinkler_type;
 export const isStationProgEnable = (entity: HassEntity) =>
     entity.entity_id.startsWith('switch.') && entity.entity_id.endsWith('_enabled');
 
