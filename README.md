@@ -12,16 +12,16 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 
 ## Options
 
-| Name              | Type    | Requirement  | Description                                      |
-| ----------------- | ------- | ------------ | -------------------------------------------      |
-| type              | string  | **Required** | `custom:opensprinkler-card`                      |
-| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant |
-| name              | string  | **Optional** | Card title (e.g. "Sprinkler")                    |
-| icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")         |
-| bars              | dict    | **Optional** | Configuration for the progress bars              |
-| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations in the popup   |
-| extra_entities    | array   | **Optional** | Entities to always show in the card              |
-| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity   |
+| Name              | Type    | Requirement  | Description                                                 |
+| ----------------- | ------- | ------------ | ------------------------------------------------------------|
+| type              | string  | **Required** | `custom:opensprinkler-card`                                 |
+| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant            |
+| name              | string  | **Optional** | Card title (e.g. "Sprinkler")                               |
+| icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")                    |
+| bars              | dict    | **Optional** | Configuration for the progress bars                         |
+| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations and programs in the popup |
+| extra_entities    | array   | **Optional** | Entities to always show in the card                         |
+| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity              |
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
 
