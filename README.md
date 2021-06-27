@@ -26,7 +26,7 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor to set `device` rather than YAML.
 
-You can also set `popup_line_height`, `timer_line_height`, and `card_line_height` to [control the spacing of entities](mobile-friendliness).
+You can also set `popup_line_height`, `timer_line_height`, and `card_line_height` to [control the spacing of entities](#mobile-friendliness).
 
 ## Entity ID requirements
 
@@ -134,6 +134,10 @@ card_line_height: small # Spacing between extra_entities (entities in the card)
 ```
 
 - You can hide the 3 vertical dots that appear to the right of station controls using `hide_dots`, which should further remove some sources of accidents. You can still access entity details by clicking on the station icon (yup, that's not very obvious ... that's why I put the dots there)
+
+## A word on design
+
+You may find some details, such as loading icons, the run-once program entry, and the layout of the card in its default configuration to be tastefully designed. You may find other details like the duration input and `extra_entities` to appear like goblin heads grafted onto puppies. I only have so much time to play around with the design, and welcome any contribution, whether code or Figma link or pencil sketch, to make the card more accessible, consistent, prettier, or whatever you strive for.
 
 ## Manual installation
 
