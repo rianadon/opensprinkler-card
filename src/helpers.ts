@@ -1,6 +1,6 @@
-import { ControlType, HassEntity } from "./types";
+import { HassEntity } from "./types";
 
-export type EntitiesFunc = (predicate: (id: string) => boolean) => HassEntity[];
+export type EntitiesFunc = (predicate: (entity: HassEntity) => boolean) => HassEntity[];
 
 const MANUAL_ID = 99;
 const RUN_ONCE_ID = 254;
@@ -9,20 +9,19 @@ const WAITING_STATES = ['waiting'];
 const ACTIVE_STATES = ['program', 'once_program', 'manual', 'on'];
 const STOPPABLE_STATES = [...ACTIVE_STATES, ...WAITING_STATES]
 
-export const isStation    = (id: string) => id.startsWith('sensor.') && id.endsWith('_status');
-export const isProgram    = (id: string) => id.startsWith('binary_sensor.') && id.endsWith('_program_running');
-export const isController = (id: string) => id.startsWith('switch.') && id.endsWith('opensprinkler_enabled');
-export const isRunOnce = (id: string) => id === 'run_once';
-export const isStationProgEnable = (id: string) => id.startsWith('switch.') && id.endsWith('_enabled');
-
-export const getControlType = (id: string) => {
-    switch (true) {
-        case isStation(id): return ControlType.Station;
-        case isProgram(id): return ControlType.Program;
-        case isRunOnce(id): return ControlType.RunOnce;
-        default: return ControlType.State;
-    }
-}
+export const isStation    = (entity: HassEntity) =>
+    entity.attributes.opensprinkler_type === 'station' &&
+    entity.entity_id.startsWith('sensor.') && entity.entity_id.endsWith('_status');
+export const isProgram    = (entity: HassEntity) =>
+    entity.attributes.opensprinkler_type === 'program' &&
+    entity.entity_id.startsWith('binary_sensor.') && entity.entity_id.endsWith('_running');
+export const isController = (entity: HassEntity) =>
+    entity.attributes.opensprinkler_type === 'controller' &&
+    entity.entity_id.startsWith('switch.') && entity.entity_id.endsWith('_enabled');
+export const isRunOnce = (entity: HassEntity) => entity.entity_id === 'run_once';
+export const isState = (entity: HassEntity) => !entity.attributes?.opensprinkler_type;
+export const isStationProgEnable = (entity: HassEntity) =>
+    entity.entity_id.startsWith('switch.') && entity.entity_id.endsWith('_enabled');
 
 export function hasRunOnce(entities: EntitiesFunc) {
     return entities(isStation).some(e => e.attributes.running_program_id === RUN_ONCE_ID);

@@ -6,14 +6,14 @@ import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 
 import { fillConfig, TimerBarEntityRow } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import { EntityRegistryEntry, subscribeEntityRegistry } from './ha_entity_registry';
-import { OpensprinklerCardConfig, HassEntity, ControlType } from './types';
+import { OpensprinklerCardConfig, HassEntity } from './types';
 import { styles } from './styles';
 import "./editor";
 import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
 import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
-import { EntitiesFunc, getControlType, hasManual, hasRunOnce, isProgram, isStation, osName, stateActivated, stateWaiting } from './helpers';
+import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isState, isStation, osName, stateActivated, stateWaiting } from './helpers';
 import { renderState } from './opensprinkler-state';
 
 // This puts your card into the UI card picker dialog
@@ -135,10 +135,10 @@ export class OpensprinklerCard extends LitElement {
     });
   }
 
-  private _matchingEntities(predicate: (id: string) => boolean) {
+  private _matchingEntities(predicate: (entity: any) => boolean) {
     if (!this.entities || !this.hass) return [];
     const entities = this.entities.filter(e =>
-      e.device_id === this.config.device && predicate(e.entity_id));
+      e.device_id === this.config.device && predicate(this.hass!.states[e.entity_id]));
     return entities.map(e => this.hass!.states[e.entity_id]);
   }
 
@@ -168,7 +168,7 @@ export class OpensprinklerCard extends LitElement {
     if (!this.config.extra_entities) return '';
     return this.config.extra_entities.map(e => {
       if (!e.includes('.')) return html`<div role="heading" class="header">${e}</div>`;
-      if (getControlType(e) === ControlType.State) return renderState(e, this.hass!);
+      if (isState(this.hass!.states[e])) return renderState(e, this.hass!);
       return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
                    .input_number=${this.config.input_number?.entity}

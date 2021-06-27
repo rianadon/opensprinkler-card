@@ -6,9 +6,9 @@ import { HomeAssistant } from 'custom-card-helpers';
 import { localize } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 
 import {
-  EntitiesFunc, getControlType, isController, isEnabled, isProgram, isStation,
+  EntitiesFunc, isController, isEnabled, isProgram, isRunOnce, isStation,
   osName, stateActivated, stateStoppable } from './helpers';
-import { ControlType, HassEntity } from './types';
+import { HassEntity } from './types';
 
 @customElement('opensprinkler-control')
 export class OpensprinklerControl extends LitElement {
@@ -54,13 +54,13 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _state(enabled: boolean) {
-    if (this._type() === ControlType.RunOnce) return 'Running';
-    if (this._type() === ControlType.Station) {
+    if (isRunOnce(this.entity)) return 'Running';
+    if (isStation(this.entity)) {
       if (this.entity.state === 'idle' && !enabled) return 'Disabled';
       if (this.entity.state === 'once_program') return 'Once Program';
       return localize(this.hass, this.entity.state, this.entity);
     }
-    if (this._type() === ControlType.Program) {
+    if (isProgram(this.entity)) {
       if (status === 'off' && !enabled) return 'Disabled';
       return status === 'on' ? 'Running' : 'Off';
     }
@@ -68,14 +68,14 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _icon(enabled: boolean) {
-    if (this._type() === ControlType.RunOnce) return 'mdi:auto-fix';
-    if (this._type() === ControlType.Station) {
+    if (isRunOnce(this.entity)) return 'mdi:auto-fix';
+    if (isStation(this.entity)) {
       let base = enabled ? 'mdi:water' : 'mdi:water-off';
       if (stateActivated(this.entity))
         return base;
       return base + '-outline';
     }
-    if (this._type() === ControlType.Program) {
+    if (isProgram(this.entity)) {
       let base = enabled ? 'mdi:timer' : 'mdi:timer-off';
       if (this.entity.state === 'on')
         return base;
@@ -89,7 +89,7 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _enabled(): boolean | undefined {
-    if (this._type() === ControlType.RunOnce) return true;
+    if (isRunOnce(this.entity)) return true;
     return isEnabled(this.entity, this.entities);
   }
 
@@ -97,7 +97,7 @@ export class OpensprinklerControl extends LitElement {
     const service = stateStoppable(entity) ? 'stop' : 'run';
     let entity_id = entity.entity_id;
 
-    const isStoppingProgram = service === 'stop' && isProgram(entity.entity_id);
+    const isStoppingProgram = service === 'stop' && isProgram(entity);
 
     if (entity_id === 'run_once' || isStoppingProgram) {
       this._stopping = true;
@@ -106,7 +106,7 @@ export class OpensprinklerControl extends LitElement {
       this._loading = true;
     }
 
-    if (service === 'stop' && isStation(entity.entity_id))
+    if (service === 'stop' && isStation(entity))
       this.hass.callService('opensprinkler', service, { entity_id });
     else
       this.hass.callService('opensprinkler', service, { entity_id, run_seconds: this._runtime() });
@@ -118,10 +118,6 @@ export class OpensprinklerControl extends LitElement {
     if (!entity) return;
 
     return Number(entity.state) * 60;
-  }
-
-  private _type() {
-    return getControlType(this.entity.entity_id);
   }
 
   static get styles() {
