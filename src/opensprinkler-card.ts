@@ -13,8 +13,9 @@ import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
 import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
-import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isState, isStation, osName, stateActivated, stateWaiting } from './helpers';
+import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isState, isStation, lineHeight, osName, stateActivated, stateWaiting } from './helpers';
 import { renderState } from './opensprinkler-state';
+import { styleMap } from 'lit/directives/style-map';
 
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
@@ -50,6 +51,9 @@ export class OpensprinklerCard extends LitElement {
     this.config = {
       name: "Sprinkler",
       icon: "mdi:sprinkler-variant",
+      card_line_height: "small",
+      timer_line_height: "medium",
+      popup_line_height: "small",
       ...config,
     };
   }
@@ -61,8 +65,12 @@ export class OpensprinklerCard extends LitElement {
 
     const config = { name: this.config.name, icon: this.config.icon, title: true };
     const entities = this._statusEntities();
+    const style = styleMap({
+      '--opensprinkler-line-height': lineHeight(this.config.card_line_height),
+      '--opensprinkler-timer-height': lineHeight(this.config.timer_line_height),
+    });
 
-    return html`<ha-card>
+    return html`<ha-card style=${style}>
       <div class="card-content">
         <opensprinkler-generic-entity-row
           .hass=${this.hass} .config=${config}
@@ -160,7 +168,7 @@ export class OpensprinklerCard extends LitElement {
       name: e.attributes.name,
     });
     return html`<opensprinkler-timer-bar-entity-row
-      .config=${config} .hass=${this.hass} style="height: 36px">
+      .config=${config} .hass=${this.hass}>
     </opensprinkler-timer-bar-entity-row>`;
   }
 
@@ -171,7 +179,7 @@ export class OpensprinklerCard extends LitElement {
       if (isState(this.hass!.states[e])) return renderState(e, this.hass!);
       return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
-                   .input_number=${this.config.input_number?.entity}
+                   .config=${this.config}
                 ></opensprinkler-control>`;
     });
   }

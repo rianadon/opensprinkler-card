@@ -12,18 +12,21 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 
 ## Options
 
-| Name              | Type    | Requirement  | Description                                                 |
-| ----------------- | ------- | ------------ | ------------------------------------------------------------|
-| type              | string  | **Required** | `custom:opensprinkler-card`                                 |
-| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant            |
-| name              | string  | **Optional** | Card title (e.g. "Sprinkler")                               |
-| icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")                    |
-| bars              | dict    | **Optional** | Configuration for the progress bars                         |
-| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations and programs in the popup |
-| extra_entities    | array   | **Optional** | Entities to always show in the card                         |
-| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity              |
+| Name              | Type    | Requirement  | Description                                                  |
+| ----------------- | ------- | ------------ | ------------------------------------------------------------ |
+| type              | string  | **Required** | `custom:opensprinkler-card`                                  |
+| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant             |
+| name              | string  | **Optional** | Card title (e.g. "Sprinkler")                                |
+| icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")                     |
+| bars              | dict    | **Optional** | Configuration for the progress bars                          |
+| extra_entities    | array   | **Optional** | Entities to always show in the card                          |
+| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity               |
+| hide_dots         | bool    | **Optional** | If `true`, hide the 3 dots appearing next to entities        |
+| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations and programs in the popup  |
 
-Finding device ids is tricky, so I recommend using the dropdown in the visual card editor rather than YAML.
+Finding device ids is tricky, so I recommend using the dropdown in the visual card editor to set `device` rather than YAML.
+
+You can also set `popup_line_height`, `timer_line_height`, and `card_line_height` to [control the spacing of entities](mobile-friendliness).
 
 ## Entity ID requirements
 
@@ -117,6 +120,20 @@ bars:
   icon: mdi:tortoise
   active_icon: mdi:rabbit
 ```
+
+## Mobile friendliness
+
+By default, the card is optimized for use with clickers, not fingers. There are a few options you may wish to change if you are a fingerer or touchscreen user:
+
+- You can space entities further apart to make it more likeley you tap the correct one. For each of the following options, you can use `normal` (40px spacing, the default in Home Assistant), `medium` (36px spacing), or `small` (32px). They are listed with their defaults:
+
+```yaml
+popup_line_height: small # Spacing between entities (sensors, stations, programs) listed in the popup
+timer_line_height: medium # Spacing between progress bars (running stations) in the card
+card_line_height: small # Spacing between extra_entities (entities in the card)
+```
+
+- You can hide the 3 vertical dots that appear to the right of station controls using `hide_dots`, which should further remove some sources of accidents. You can still access entity details by clicking on the station icon (yup, that's not very obvious ... that's why I put the dots there)
 
 ## Manual installation
 

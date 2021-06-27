@@ -8,7 +8,7 @@ import { localize } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import {
   EntitiesFunc, isController, isEnabled, isProgram, isRunOnce, isStation,
   osName, stateActivated, stateStoppable } from './helpers';
-import { HassEntity } from './types';
+import { HassEntity, OpensprinklerCardConfig } from './types';
 
 @customElement('opensprinkler-control')
 export class OpensprinklerControl extends LitElement {
@@ -17,7 +17,7 @@ export class OpensprinklerControl extends LitElement {
   @property({ attribute: false }) public entities!: EntitiesFunc;
   @property() public controller!: string;
   @property() public entity!: HassEntity;
-  @property() public input_number?: string;
+  @property() public config!: OpensprinklerCardConfig;
 
   @state() private _loading = false;
   @state() private _stopping = false;
@@ -42,6 +42,7 @@ export class OpensprinklerControl extends LitElement {
     const config = {
       entity: this.entity.entity_id, name: osName(this.entity),
       icon: this._icon(enabled),
+      hide_dots: this.config.hide_dots,
     };
 
     return html`<opensprinkler-generic-entity-row .config=${config} .hass=${this.hass} .stateObj=${this.entity}>
@@ -113,8 +114,8 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _runtime() {
-    if (!this.input_number) return undefined;
-    const entity = this.hass.states[this.input_number];
+    if (!this.config.input_number?.entity) return undefined;
+    const entity = this.hass.states[this.config.input_number.entity];
     if (!entity) return;
 
     return Number(entity.state) * 60;
@@ -122,7 +123,7 @@ export class OpensprinklerControl extends LitElement {
 
   static get styles() {
     return css`
-      opensprinkler-generic-entity-row { height: 32px; }
+      opensprinkler-generic-entity-row { height: var(--opensprinkler-line-height); }
 
       .button {
         color: var(--secondary-text-color);

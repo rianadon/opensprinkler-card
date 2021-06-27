@@ -9,6 +9,7 @@ import { css, CSSResultGroup, html, LitElement,
          PropertyValues, TemplateResult } from "lit";
 import { property } from "lit/decorators";
 import { classMap } from "lit/directives/class-map";
+import { ifDefined } from "lit/directives/if-defined";
 import { fireEvent, HomeAssistant, computeRTL } from "custom-card-helpers";
 
 class OpensprinklerGenericEntityRow extends LitElement {
@@ -27,14 +28,18 @@ class OpensprinklerGenericEntityRow extends LitElement {
     const hasSecondary = this.secondaryText || this.config.secondary_info;
     const spanStyle = this.config.title ? "font-size: 1.1em" : "";
 
+    const pointer = this.config.hide_dots;
+
     return html`
       <state-badge
+        class=${classMap({ pointer })}
         .hass=${this.hass}
         .overrideIcon=${this.config.icon}
         .overrideImage=${this.config.image}
         .stateColor=${this.config.state_color}
         .stateObj=${this.stateObj}
         @click=${this._handleClick}
+        tabindex=${ifDefined(pointer ? "0" : undefined)}
       ></state-badge>
       <div
         class="info ${classMap({
@@ -47,7 +52,7 @@ class OpensprinklerGenericEntityRow extends LitElement {
           : ""}
       </div>
       <slot></slot>
-      <mwc-icon-button
+      ${this.config.hide_dots ? '' : html`<mwc-icon-button
         class="more-info"
         label="Open more info"
         @click=${this._handleClick}
@@ -55,7 +60,7 @@ class OpensprinklerGenericEntityRow extends LitElement {
         style="margin-inline-end: -8px"
       >
         <ha-svg-icon .path=${mdiDotsVertical}></ha-svg-icon>
-      </mwc-icon-button>
+      </mwc-icon-button>`}
     `;
   }
 
@@ -110,6 +115,9 @@ class OpensprinklerGenericEntityRow extends LitElement {
       :host([rtl]) .flex ::slotted(*) {
         margin-left: 0;
         margin-right: 8px;
+      }
+      .pointer {
+        cursor: pointer;
       }
       .more-info {
         color: var(--secondary-text-color);

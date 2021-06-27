@@ -1,4 +1,4 @@
-import { HassEntity } from "./types";
+import { HassEntity, LineHeight } from "./types";
 
 export type EntitiesFunc = (predicate: (entity: HassEntity) => boolean) => HassEntity[];
 
@@ -44,4 +44,10 @@ export function isEnabled(entity: HassEntity, func: EntitiesFunc) {
       e.attributes.index == entity.attributes.index &&
       e.attributes.opensprinkler_type == entity.attributes.opensprinkler_type
     ))?.state === 'on';
+}
+
+export function lineHeight(size: LineHeight | undefined) {
+    if (size === 'small') return '32px';
+    if (size === 'medium') return '36px';
+    return undefined
 }

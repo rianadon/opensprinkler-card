@@ -1,8 +1,12 @@
 import { css } from 'lit';
 
 export const styles = css`
+  opensprinkler-timer-bar-entity-row {
+    height: var(--opensprinkler-timer-height);
+  }
+
   opensprinkler-state {
-    height: 32px;
+    height: var(--opensprinkler-line-height);
     color: var(--primary-text-color);
     display: flex;
     justify-content: center;

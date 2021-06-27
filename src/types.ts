@@ -15,6 +15,7 @@ export declare type HassEntity = {
   };
 };
 
+export type LineHeight = 'small' | 'medium' | 'normal';
 
 // TODO Add your configuration elements here for type-checking
 export interface OpensprinklerCardConfig {
@@ -25,5 +26,9 @@ export interface OpensprinklerCardConfig {
   bars?: TimerBarConfig;
   extra_entities?: string[];
   input_number?: EntityConfig;
+  hide_dots?: boolean;
   hide_disabled?: boolean;
+  card_line_height?: LineHeight;
+  timer_line_height?: LineHeight;
+  popup_line_height?: LineHeight;
 }

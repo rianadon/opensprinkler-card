@@ -8,8 +8,9 @@ import "./opensprinkler-state";
 import "./opensprinkler-control";
 import { OpensprinklerCard } from "./opensprinkler-card";
 import { haStyleDialog, haStyleMoreInfo } from "./ha_style";
-import { EntitiesFunc, hasRunOnce, isController, isEnabled, isProgram, isState, isStation } from "./helpers";
+import { EntitiesFunc, hasRunOnce, isController, isEnabled, isProgram, isState, isStation, lineHeight } from "./helpers";
 import { renderState } from "./opensprinkler-state";
+import { styleMap } from "lit/directives/style-map";
 
 export interface MoreInfoDialogParams {
   config: OpensprinklerCardConfig;
@@ -44,7 +45,10 @@ export class MoreInfoDialog extends LitElement {
       return html``;
     }
 
-    const style = computeRTL(this.hass) ? 'direction: rtl' : '';
+    const style = styleMap({
+      '--opensprinkler-line-height': lineHeight(this._config.popup_line_height),
+      direction: computeRTL(this.hass) ? 'rtl' : undefined,
+    });
 
     return html`
       <ha-dialog
@@ -91,7 +95,7 @@ export class MoreInfoDialog extends LitElement {
   private _renderControl(entity: HassEntity) {
     return html`<opensprinkler-control .entity=${entity}
                    .entities=${this.entities} .hass=${this.hass}
-                   .input_number=${this._config!.input_number?.entity}
+                   .config=${this._config}
                    @hass-more-info=${this._moreInfo}
                 ></opensprinkler-control>`;
   }
