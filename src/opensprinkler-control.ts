@@ -8,7 +8,7 @@ import { localize } from 'lovelace-timer-bar-card/src/timer-bar-entity-row';
 import {
   EntitiesFunc, isController, isEnabled, isProgram, isRunOnce, isStation,
   osName, stateActivated, stateStoppable } from './helpers';
-import { HassEntity, OpensprinklerCardConfig } from './types';
+import { HassEntity, IconSet, OpensprinklerCardConfig } from './types';
 
 @customElement('opensprinkler-control')
 export class OpensprinklerControl extends LitElement {
@@ -69,19 +69,23 @@ export class OpensprinklerControl extends LitElement {
   }
 
   private _icon(enabled: boolean) {
-    if (isRunOnce(this.entity)) return 'mdi:auto-fix';
+    if (isRunOnce(this.entity)) return this.config.icons.run_once;
     if (isStation(this.entity)) {
-      let base = enabled ? 'mdi:water' : 'mdi:water-off';
-      if (stateActivated(this.entity))
-        return base;
-      return base + '-outline';
+      const on = stateActivated(this.entity);
+      return this._iconFromSet(on, enabled, this.config.icons.station);
     }
     if (isProgram(this.entity)) {
-      let base = enabled ? 'mdi:timer' : 'mdi:timer-off';
-      if (this.entity.state === 'on')
-        return base;
-      return base + '-outline';
+      const on = this.entity.state === 'on';
+      return this._iconFromSet(on, enabled, this.config.icons.program);
     }
+    return;
+  }
+
+  private _iconFromSet(on: boolean, enabled: boolean, icons: IconSet) {
+    if (on && enabled) return icons.active;
+    if (!on && enabled) return icons.idle;
+    if (on && !enabled) return icons.active_disabled;
+    if (!on && !enabled) return icons.idle_disabled;
     return;
   }
 

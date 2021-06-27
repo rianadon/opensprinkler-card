@@ -55,6 +55,24 @@ export class OpensprinklerCard extends LitElement {
       timer_line_height: "medium",
       popup_line_height: "small",
       ...config,
+      icons: {
+        run_once: 'mdi:auto-fix',
+        ...config.icons,
+        station: {
+          active: 'mdi:water',
+          active_disabled: 'mdi:water-off',
+          idle: 'mdi:water-outline',
+          idle_disabled: 'mdi:water-off-outline',
+          ...config.icons?.station,
+        },
+        program: {
+          active: 'mdi:timer',
+          active_disabled: 'mdi:timer-off',
+          idle: 'mdi:timer-outline',
+          idle_disabled: 'mdi:timer-off-outline',
+          ...config.icons?.station,
+        }
+      }
     };
   }
 
@@ -158,8 +176,8 @@ export class OpensprinklerCard extends LitElement {
   private _renderStatus(e: HassEntity) {
     const config = fillConfig({
       // These two properties can be overridden
-      icon: 'mdi:water-outline',
-      active_icon: 'mdi:water',
+      icon: this.config.icons.station.idle,
+      active_icon: this.config.icons.station.active,
 
       ...this.config.bars,
 

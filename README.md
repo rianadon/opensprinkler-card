@@ -12,17 +12,18 @@ OpenSprinkler Card is available from [HACS][hacs] (search for "opensprinkler car
 
 ## Options
 
-| Name              | Type    | Requirement  | Description                                                  |
-| ----------------- | ------- | ------------ | ------------------------------------------------------------ |
-| type              | string  | **Required** | `custom:opensprinkler-card`                                  |
-| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant             |
-| name              | string  | **Optional** | Card title (e.g. "Sprinkler")                                |
-| icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")                     |
-| bars              | dict    | **Optional** | Configuration for the progress bars                          |
-| extra_entities    | array   | **Optional** | Entities to always show in the card                          |
-| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity               |
-| hide_dots         | bool    | **Optional** | If `true`, hide the 3 dots appearing next to entities        |
-| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations and programs in the popup  |
+| Name              | Type    | Requirement  | Description                                                          |
+| ----------------- | ------- | ------------ | -------------------------------------------------------------------- |
+| type              | string  | **Required** | `custom:opensprinkler-card`                                          |
+| device            | string  | **Required** | Device id of the OpenSprinkler in Home Assistant                     |
+| name              | string  | **Optional** | Card title (e.g. "Sprinkler")                                        |
+| icon              | string  | **Optional** | Card icon (e.g. "mdi:sprinkler-variant")                             |
+| bars              | dict    | **Optional** | Configuration for the progress bars                                  |
+| extra_entities    | array   | **Optional** | Entities to always show in the card                                  |
+| input_number      | string  | **Optional** | Configuration for run-duration-choosing entity                       |
+| hide_dots         | bool    | **Optional** | If `true`, hide the 3 dots appearing next to entities                |
+| hide_disabled     | bool    | **Optional** | If `true`, hide disabled stations and programs in the popup          |
+| icons             | dict    | **Optional** | Icon configuration. See the [default config][config] for an example. |
 
 Finding device ids is tricky, so I recommend using the dropdown in the visual card editor to set `device` rather than YAML.
 
@@ -34,7 +35,7 @@ This card locates your OpenSprinkler entities by using their entity ids. If you 
 
 Otherwise, make sure:
 - The ids of station status sensors end with `_status`
-- The ids of program running binary sensors end with `_program_running`
+- The ids of program running binary sensors end with `_running`
 - The id of the OpenSprinkler controller enabled switch ends with `_enabled`
 - The ids of program & station enabled switches end with `_enabled`
 
@@ -152,3 +153,4 @@ You may find some details, such as loading icons, the run-once program entry, an
 [opensprinkler-integration]: https://github.com/vinteo/hass-opensprinkler
 [hacs]: https://hacs.xyz/
 [release]: https://github.com/rianadon/oepnsprinkler-card/releases
+[config]: https://github.com/rianadon/opensprinkler-card/blob/main/CONFIGURATION.md

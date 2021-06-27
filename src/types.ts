@@ -17,6 +17,13 @@ export declare type HassEntity = {
 
 export type LineHeight = 'small' | 'medium' | 'normal';
 
+export type IconSet = {
+  active?: string;
+  active_disabled?: string;
+  idle?: string;
+  idle_disabled?: string;
+}
+
 // TODO Add your configuration elements here for type-checking
 export interface OpensprinklerCardConfig {
   type: string;
@@ -31,4 +38,9 @@ export interface OpensprinklerCardConfig {
   card_line_height?: LineHeight;
   timer_line_height?: LineHeight;
   popup_line_height?: LineHeight;
+  icons: {
+    run_once?: string;
+    station: IconSet;
+    program: IconSet;
+  }
 }
