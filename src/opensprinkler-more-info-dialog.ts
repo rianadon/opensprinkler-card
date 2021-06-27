@@ -99,7 +99,11 @@ export class MoreInfoDialog extends LitElement {
   private _renderStates() {
     return this.entities(isController).map(s => {
       return this._renderState(s);
-    }).concat(this.entities(isState).map(s => {
+    }).concat(this.entities(isState).sort((a, b) => {
+      if (a.entity_id.includes('sensor_')) return 1
+      if (a.entity_id.includes('rain_delay') && !b.entity_id.includes('sensor_')) return 1
+      return -1
+    }).map(s => {
       return this._renderState(s);
     }));
   }
