@@ -1,4 +1,4 @@
-import { ControlType, HassEntity } from "./types";
+import { HassEntity } from "./types";
 
 export type EntitiesFunc = (predicate: (entity: HassEntity) => boolean) => HassEntity[];
 
@@ -10,31 +10,18 @@ const ACTIVE_STATES = ['program', 'once_program', 'manual', 'on'];
 const STOPPABLE_STATES = [...ACTIVE_STATES, ...WAITING_STATES]
 
 export const isStation    = (entity: HassEntity) =>
-    entity.attributes?.opensprinkler_type === ControlType.Station &&
-    entity.entity_id.startsWith('sensor.') &&
-    entity.entity_id.endsWith('_status');
+    entity.attributes.opensprinkler_type === 'station' &&
+    entity.entity_id.startsWith('sensor.') && entity.entity_id.endsWith('_status');
 export const isProgram    = (entity: HassEntity) =>
-    entity.attributes?.opensprinkler_type === ControlType.Program &&
-    entity.entity_id.startsWith('binary_sensor.') &&
-    entity.entity_id.endsWith('_program_running');
+    entity.attributes.opensprinkler_type === 'program' &&
+    entity.entity_id.startsWith('binary_sensor.') && entity.entity_id.endsWith('_running');
 export const isController = (entity: HassEntity) =>
-    entity.attributes?.opensprinkler_type === ControlType.Controller &&
-    entity.entity_id.startsWith('switch.') &&
-    entity.entity_id.endsWith('_enabled');
+    entity.attributes.opensprinkler_type === 'controller' &&
+    entity.entity_id.startsWith('switch.') && entity.entity_id.endsWith('_enabled');
 export const isRunOnce = (entity: HassEntity) => entity.entity_id === 'run_once';
 export const isState = (entity: HassEntity) => !entity.attributes?.opensprinkler_type;
 export const isStationProgEnable = (entity: HassEntity) =>
     entity.entity_id.startsWith('switch.') && entity.entity_id.endsWith('_enabled');
-
-export const getControlType = (entity: HassEntity) => {
-    switch (true) {
-        case isController(entity): return ControlType.Controller;
-        case isStation(entity): return ControlType.Station;
-        case isProgram(entity): return ControlType.Program;
-        case isRunOnce(entity): return ControlType.RunOnce;
-        default: return ControlType.State;
-    }
-}
 
 export function hasRunOnce(entities: EntitiesFunc) {
     return entities(isStation).some(e => e.attributes.running_program_id === RUN_ONCE_ID);
