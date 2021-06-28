@@ -111,10 +111,10 @@ export class OpensprinklerControl extends LitElement {
       this._loading = true;
     }
 
-    if (service === 'stop' && isStation(entity))
-      this.hass.callService('opensprinkler', service, { entity_id });
-    else
+    if (service === 'run' && isStation(entity))
       this.hass.callService('opensprinkler', service, { entity_id, run_seconds: this._runtime() });
+    else
+      this.hass.callService('opensprinkler', service, { entity_id });
   }
 
   private _runtime() {
