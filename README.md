@@ -152,5 +152,5 @@ You may find some details, such as loading icons, the run-once program entry, an
 [opensprinkler]: https://opensprinkler.com
 [opensprinkler-integration]: https://github.com/vinteo/hass-opensprinkler
 [hacs]: https://hacs.xyz/
-[release]: https://github.com/rianadon/oepnsprinkler-card/releases
+[release]: https://github.com/rianadon/opensprinkler-card/releases
 [config]: https://github.com/rianadon/opensprinkler-card/blob/main/CONFIGURATION.md
