@@ -12,6 +12,8 @@ timer_line_height: "medium"
 popup_line_height: "small"
 
 icons: {
+  # If any of these icons are set to `false`,
+  # the default entity icon will be used
   run_once: 'mdi:auto-fix'
   station: {
     active: 'mdi:water'
