@@ -163,8 +163,11 @@ export class OpensprinklerCard extends LitElement {
 
   private _matchingEntities(predicate: (entity: any) => boolean) {
     if (!this.entities || !this.hass) return [];
-    const entities = this.entities.filter(e =>
-      e.device_id === this.config.device && predicate(this.hass!.states[e.entity_id]));
+    const entities = this.entities.filter(e => {
+      const state = this.hass!.states[e.entity_id];
+      if (!state) return;
+      return e.device_id === this.config.device && predicate(state);
+    });
     return entities.map(e => this.hass!.states[e.entity_id]);
   }
 
@@ -194,6 +197,7 @@ export class OpensprinklerCard extends LitElement {
     if (!this.config.extra_entities) return '';
     return this.config.extra_entities.map(e => {
       if (!e.includes('.')) return html`<div role="heading" class="header">${e}</div>`;
+      if (!this.hass!.states[e]) return '';
       if (isState(this.hass!.states[e])) return renderState(e, this.hass!);
       return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
