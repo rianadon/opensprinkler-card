@@ -23,6 +23,8 @@ export const isRunOnce = (entity: HassEntity) => entity.entity_id === 'run_once'
 export const isState = (entity: HassEntity) => !entity.attributes?.opensprinkler_type;
 export const isStationProgEnable = (entity: HassEntity) =>
     entity.entity_id.startsWith('switch.');
+export const isPlayPausable = (entity: HassEntity) =>
+    isStation(entity) || isProgram(entity) || isRunOnce(entity)
 
 export function hasRunOnce(entities: EntitiesFunc) {
     return entities(isStation).some(e => e.attributes.running_program_id === RUN_ONCE_ID);

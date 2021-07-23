@@ -13,7 +13,7 @@ import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
 import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
-import { EntitiesFunc, hasManual, hasRunOnce, isProgram, isState, isStation, lineHeight, osName, stateActivated, stateWaiting } from './helpers';
+import { EntitiesFunc, hasManual, hasRunOnce, isPlayPausable, isProgram, isStation, lineHeight, osName, stateActivated, stateWaiting } from './helpers';
 import { renderState } from './opensprinkler-state';
 import { styleMap } from 'lit/directives/style-map';
 
@@ -197,8 +197,8 @@ export class OpensprinklerCard extends LitElement {
     if (!this.config.extra_entities) return '';
     return this.config.extra_entities.map(e => {
       if (!e.includes('.')) return html`<div role="heading" class="header">${e}</div>`;
-      if (!this.hass!.states[e]) return '';
-      if (isState(this.hass!.states[e])) return renderState(e, this.hass!);
+      if (!this.hass!.states[e]) return html`<hui-warning>Entity ${e} not found</hui-warning>`;
+      if (!isPlayPausable(this.hass!.states[e])) return renderState(e, this.hass!);
       return html`<opensprinkler-control .entity=${this.hass!.states[e]}
                    .entities=${p => this._matchingEntities(p)} .hass=${this.hass}
                    .config=${this.config}
