@@ -1,6 +1,6 @@
 {
   "name": "opensprinkler-card",
-  "version": "1.0.0",
+  "version": "1.10.0",
   "description": "OpenSprinkler status for Home Assistant",
   "keywords": [
     "home-assistant",
