@@ -1,6 +1,6 @@
 {
   "name": "opensprinkler-card",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "OpenSprinkler status for Home Assistant",
   "keywords": [
     "home-assistant",
@@ -14,24 +14,24 @@
   "repository": "git@github.com:rianadon/opensprinkler-card.git",
   "license": "Apache-2.0",
   "dependencies": {
-    "@mdi/js": "^5.9.55",
-    "custom-card-helpers": "^1.7.1",
-    "home-assistant-js-websocket": "^5.10.0",
-    "lit": "^2.0.0-rc.2",
-    "lovelace-timer-bar-card": "^1.9.0"
+    "@mdi/js": "^6.5.95",
+    "custom-card-helpers": "^1.8.0",
+    "home-assistant-js-websocket": "^5.12.0",
+    "lit": "^2.0.2",
+    "lovelace-timer-bar-card": "^1.15.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
+    "@babel/core": "^7.16.5",
     "@rollup/plugin-json": "^4.1.0",
-    "prettier": "^2.3.1",
-    "rollup": "^2.52.2",
+    "prettier": "^2.5.1",
+    "rollup": "^2.61.1",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-typescript2": "^0.30.0",
-    "typescript": "^4.3.4"
+    "rollup-plugin-typescript2": "^0.31.1",
+    "typescript": "^4.5.4"
   },
   "scripts": {
     "start": "rollup -c rollup.config.dev.js --watch",
