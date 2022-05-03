@@ -90,7 +90,7 @@ You can also use custom cards for the duration control, like [numberbox-card](ht
 ```yaml
 ...
 input_number:
-  entity: input_number.slider1
+  entity: input_number.slider
   type: custom:numberbox-card
   unit: m
   icon: mdi:timelapse
