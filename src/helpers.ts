@@ -25,12 +25,21 @@ export const isStationProgEnable = (entity: HassEntity) =>
     entity.entity_id.startsWith('switch.');
 export const isPlayPausable = (entity: HassEntity) =>
     isStation(entity) || isProgram(entity) || isRunOnce(entity)
+export const isRainDelayActiveSensor = (entity: HassEntity) =>
+    entity.entity_id.startsWith('binary_sensor.') &&
+    entity.entity_id.endsWith('rain_delay_active')
+export const isRainDelayStopTime = (entity: HassEntity) =>
+    entity.entity_id.startsWith('sensor.') &&
+    entity.entity_id.endsWith('rain_delay_stop_time')
 
 export function hasRunOnce(entities: EntitiesFunc) {
     return entities(isStation).some(e => e.attributes.running_program_id === RUN_ONCE_ID);
 }
 export function hasManual(entities: EntitiesFunc) {
     return entities(isStation).some(e => e.attributes.running_program_id === MANUAL_ID);
+}
+export function hasRainDelayActive(entities: EntitiesFunc) {
+    return entities(isRainDelayActiveSensor).some(e => e.state === 'on');
 }
 
 export const stateWaiting   = (entity: HassEntity) => WAITING_STATES.includes(entity.state);

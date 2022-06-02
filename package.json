@@ -15,8 +15,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@mdi/js": "^6.5.95",
-    "custom-card-helpers": "^1.8.0",
-    "home-assistant-js-websocket": "^5.12.0",
+    "custom-card-helpers": "^1.9.0",
+    "home-assistant-js-websocket": "^6.0.1",
     "lit": "^2.0.2",
     "lovelace-timer-bar-card": "^1.15.0"
   },
