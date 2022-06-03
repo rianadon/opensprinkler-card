@@ -1,6 +1,6 @@
 import { LitElement, css, html, TemplateResult } from 'lit';
 import { customElement, state, property } from "lit/decorators";
-import { HomeAssistant, LovelaceCardEditor, relativeTime } from 'custom-card-helpers';
+import { HomeAssistant, LovelaceCardEditor } from 'custom-card-helpers';
 import { PropertyValues } from 'lit-element';
 import { UnsubscribeFunc } from 'home-assistant-js-websocket';
 
@@ -16,6 +16,7 @@ import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
 import { EntitiesFunc, hasManual, hasRainDelayActive, hasRunOnce, isPlayPausable, isProgram, isRainDelayStopTime, isStation, lineHeight, osName, stateActivated, stateWaiting } from './helpers';
 import { renderState } from './opensprinkler-state';
 import { styleMap } from 'lit/directives/style-map';
+import { relativeTime } from './relative_time';
 
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
@@ -211,7 +212,7 @@ export class OpensprinklerCard extends LitElement {
 
     if (hasRainDelayActive(entities)) {
       const stop_time = entities(isRainDelayStopTime).find(_ => true)?.state;
-      return `Rain delay${ stop_time ? ` ends ${relativeTime(new Date(stop_time), this.hass!.locale)}` : ''}`;
+      return `Rain delay${ stop_time ? ` ends ${relativeTime(new Date(stop_time), this.hass!.locale!)}` : ''}`;
     }
 
     const programs = entities(isProgram).filter(stateActivated).map(osName);
