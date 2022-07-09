@@ -38,6 +38,8 @@ Otherwise, make sure:
 - The ids of program running binary sensors end with `_running`
 - The id of the OpenSprinkler controller enabled switch ends with `_enabled`
 - The ids of program & station enabled switches end with `_enabled`
+- The id of the rain delay active binary sensor ends with `_rain_delay_active`
+- The id of the rain delay stop time sensor ends with `_rain_delay_stop_time`
 
 ## Extra entities and duration control
 

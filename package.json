@@ -14,8 +14,9 @@
   "repository": "git@github.com:rianadon/opensprinkler-card.git",
   "license": "Apache-2.0",
   "dependencies": {
+    "@formatjs/intl-utils": "^3.8.4",
     "@mdi/js": "^6.5.95",
-    "custom-card-helpers": "^1.8.0",
+    "custom-card-helpers": "1.8.0",
     "home-assistant-js-websocket": "^5.12.0",
     "lit": "^2.0.2",
     "lovelace-timer-bar-card": "^1.15.0"

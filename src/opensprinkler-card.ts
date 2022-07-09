@@ -13,9 +13,10 @@ import "./opensprinkler-generic-entity-row";
 import "./opensprinkler-more-info-dialog";
 import "./opensprinkler-control";
 import { MoreInfoDialog } from './opensprinkler-more-info-dialog';
-import { EntitiesFunc, hasManual, hasRunOnce, isPlayPausable, isProgram, isStation, lineHeight, osName, stateActivated, stateWaiting } from './helpers';
+import { EntitiesFunc, hasManual, hasRainDelayActive, hasRunOnce, isPlayPausable, isProgram, isRainDelayStopTime, isStation, lineHeight, osName, stateActivated, stateWaiting } from './helpers';
 import { renderState } from './opensprinkler-state';
 import { styleMap } from 'lit/directives/style-map';
+import { relativeTime } from './relative_time';
 
 // This puts your card into the UI card picker dialog
 (window as any).customCards = (window as any).customCards || [];
@@ -208,6 +209,11 @@ export class OpensprinklerCard extends LitElement {
 
   private _secondaryText() {
     const entities: EntitiesFunc = p => this._matchingEntities(p)
+
+    if (hasRainDelayActive(entities)) {
+      const stop_time = entities(isRainDelayStopTime).find(_ => true)?.state;
+      return `Rain delay${ stop_time ? ` ends ${relativeTime(new Date(stop_time), this.hass!.locale!)}` : ''}`;
+    }
 
     const programs = entities(isProgram).filter(stateActivated).map(osName);
     if (hasRunOnce(entities)) programs.splice(0, 0, 'Once Program');
