@@ -18,7 +18,6 @@ const options = {
 export class BoilerplateCardEditor extends LitElement implements LovelaceCardEditor {
   @property({ attribute: false }) public hass?: HomeAssistant;
   @state() private _config?: OpensprinklerCardConfig;
-  @state() private _toggle?: boolean;
   @state() private _helpers?: any;
   private _initialized = false;
 
@@ -36,12 +35,10 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
     return true;
   }
 
-  get _name(): string {
-    return this._config?.name || '';
-  }
-
-  get _device(): string | undefined {
-    return this._config?.device;
+  private _computeLabel(schema: any) {
+    if (schema.name == 'device') return 'Device (Required)';
+    if (schema.name == 'name') return 'Name (Optional)';
+    return '';
   }
 
   protected render(): TemplateResult | void {
@@ -49,33 +46,20 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
       return html``;
     }
 
-    const selector = { device: { integration: 'opensprinkler' } };
+    const schema = [
+      { name: 'device', selector: { device: { integration: 'opensprinkler', manufacturer: 'OpenSprinkler' } } },
+      { name: 'name', selector: { text: {} } },
+    ];
 
     return html`
       <div class="card-config">
-        <div class="option" .option=${'required'}>
-          <div class="row">
-            <ha-icon .icon=${`mdi:${options.required.icon}`}></ha-icon>
-            <div class="title">${options.required.name}</div>
-          </div>
-          <div class="secondary">${options.required.secondary}</div>
-        </div>
-        <div class="values">
-          <ha-selector-device
-            label="Device (Required)"
-            .value=${this._device}
-            @value-changed=${this._valueChanged}
-            .selector=${selector}
+          <ha-form
             .hass=${this.hass}
-            .configValue=${'device'}
-          ></ha-selector-device>
-          <paper-input
-            label="Name (Optional)"
-            .value=${this._name}
-            .configValue=${'name'}
+            .data=${this._config}
+            .schema=${schema}
+            .computeLabel=${this._computeLabel}
             @value-changed=${this._valueChanged}
-          ></paper-input>
-        </div>
+          ></ha-form>
       </div>
     `;
   }
@@ -92,24 +76,8 @@ export class BoilerplateCardEditor extends LitElement implements LovelaceCardEdi
   }
 
   private _valueChanged(ev: CustomEvent): void {
-    if (!this._config || !this.hass) return;
+    fireEvent(this, 'config-changed', { config: ev.detail.value });
 
-    const target = ev.target as any;
-    const value = ev.detail?.value ?? target.value;
-
-    if (this[`_${target.configValue}`] === value) return;
-
-    if (target.configValue) {
-      if (value === '') {
-        delete this._config[target.configValue];
-      } else {
-        this._config = {
-          ...this._config,
-          [target.configValue]: target.checked !== undefined ? target.checked : value,
-        };
-      }
-    }
-    fireEvent(this, 'config-changed', { config: this._config });
   }
 
   static get styles(): CSSResultGroup {
