@@ -19,7 +19,7 @@
     "custom-card-helpers": "1.8.0",
     "home-assistant-js-websocket": "^5.12.0",
     "lit": "^2.0.2",
-    "lovelace-timer-bar-card": "^1.15.0"
+    "lovelace-timer-bar-card": "1.17"
   },
   "devDependencies": {
     "@babel/core": "^7.16.5",
