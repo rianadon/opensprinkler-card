@@ -151,11 +151,16 @@ export class OpensprinklerCard extends LitElement {
 
   public disconnectedCallback() {
     super.disconnectedCallback();
-    if (this.unsub) this.unsub();
-    this.unsub = undefined;
-    document.body.removeChild(this.dialog);
+    if (this.unsub) {
+      this.unsub();
+      this.unsub = undefined;
+    }
+    
+    if (this.dialog && this.dialog.parentNode) {
+      this.dialog.parentNode.removeChild(this.dialog);
+    }
   }
-
+  
   private _subscribe() {
     this.unsub = subscribeEntityRegistry(this.hass!.connection, entries => {
       this.entities = entries;
